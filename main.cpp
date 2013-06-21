@@ -3,6 +3,32 @@
 
 using namespace Eigen;
 
+class link
+{
+	public:
+	double a, alpha, offset, theta;
+
+	link(){};
+	Matrix4d Transform(double angle);
+};
+
+class manipulator
+{
+	private:
+	manipulator(){};
+}
+
+Matrix4d link::Transform(double angle)
+{
+//todo
+};
+
+
+Matrix4d ForwardKine(double angle)
+{
+//todo
+}
+
 Vector2d myFunction(Vector2d in)
 {
 	return in+in;
