@@ -7,3 +7,4 @@
 #define D 1.0
 #define W 100
 #define nothing 0
+#define asd 0
