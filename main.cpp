@@ -1,5 +1,9 @@
 #include <iostream>
+#include <cmath>
 #include "Eigen/Dense"
+
+#define twidth 0.001
+#define TMAX 5.0
 
 using namespace Eigen;
 
@@ -15,45 +19,68 @@ class link
 class manipulator
 {
 	private:
-	manipulator(){};
-}
+	Vector4d x;
+	Vector4d v;
+	Vector4d a;
+	manipulator();
+	manipulator(Vector4d ac);
+};
 
 Matrix4d link::Transform(double angle)
 {
-//todo
+	Matrix4d T;
+	int i,j;
+	
+	T(0,3)=0.0;
+	T(1,3)=a*cos(angle);
+	T(2,3)=a*sin(angle);
+	T(3,3)=1.0;
+	for(i=0;i<3;i++){
+		T(3,i)=0.0;
+	}
+	T(0,0)=1.0;		T(0,1)=0.0;			T(0,2)=0.0;
+	T(1,0)=0.0;		T(1,1)=cos(angle);	T(1,2)=-sin(angle);
+	T(2,0)=0.0;		T(2,1)=sin(angle);	T(2,2)=cos(angle);
+	return T;
 };
 
 
 Matrix4d ForwardKine(double angle)
 {
+	Matrix4d F;
+	
+	
+	
+	
+	
+	return F;
 //todo
 }
+void manipulator::manipulator(){
+	a=Zero(4);
+	v=Zero(4);
+}
 
-Vector2d myFunction(Vector2d in)
-{
-	return in+in;
+void manipulator::manipulator(Vector4d ac){
+	a=ac;
+	v+=ac*twidth;
+	x+=v*twidth;
 }
 
 
 int main()
 {
-MatrixXd m(2,2);
-m(0,0) = 3;
-m(1,0) = 2.5;
-m(0,1) = -1;
-m(1,1) = m(1,0) + m(0,1);
-VectorXd cx(2);
-Vector2d c = Vector2d::Zero();
-Vector2d d = Vector2d::Zero();
-Matrix3d e = Matrix3d::Identity();
-Matrix3d f = Matrix3d::Random();
-Vector2d g = Vector2d::Zero();
-g << 1.0, 1.0;
-std::cout << ((m*m + m)*cx).transpose()<< std::endl;
-std::cout << d<< std::endl;
-std::cout << e.inverse()<< std::endl;
-std::cout << f.inverse()<< std::endl;
-std::cout << std::endl;
-std::cout << g << std::endl;
-std::cout << myFunction(g) << std::endl;
+	double t;
+	double the_1,the_2;
+	Matrix4d F_1,F_2;
+	link A,B;
+	manipulator X,Y;
+	manipulator cmd;
+	
+	for(t=0.0;t<TMAX;t+=twidth)
+		F_1=Forward(the_1);
+		F_2=Forward(the_2);
+		
+		
+		
 }
