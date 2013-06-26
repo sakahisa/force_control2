@@ -2,11 +2,15 @@
 #include <cmath>
 #include <fstream>
 #include "Eigen/Dense"
+#include <vector>
 
 #define twidth 0.001
 #define TMAX 5.0
 #define l1 1.0
 #define l2 1.0
+
+#define TRANS(x) x.block<3,1>(0,3)
+#define ROT(x) x.block<3,3>(0,0) 
 
 using namespace Eigen;
 
@@ -26,7 +30,17 @@ class manipulator
 	Vector4d x;
 	
 	manipulator(){};
+	
+	// camelCase	
+	Matrix4d forwardKine(VectorXd angle);
+	Matrix4d forwardKine(VectorXd angle, int to_idx);
+	
+	MatrixXd getJacobian(VectorXd angle);
+	MatrixXd testGetJacobian(VectorXd angle);
+	
 	manipulator(double a);
+	std::vector<Link* > links;
+	
 };
 Link::Link(double l,double m,double n,double o){
 	a=l;
@@ -52,30 +66,61 @@ Matrix4d Link::Transform(double angle)
 
 
 manipulator::manipulator(double a){
-	x(0)=a;
-	x(1)=0.0;
-	x(2)=0.0;
-	x(3)=1.0;
+	//links.size() -> 0
+	//links[0] = asdasd
+	int dof = 3;
+	double l[3] = {0.1, 0.05, 0.025};
+	double m[3] = {0.1, 0.05, 0.025};
+	double n[3] = {0.1, 0.05, 0.025};
+	double o[3] = {0.1, 0.05, 0.025};
+	
+	for(int i = 0; i < dof; i++) links.push_back(new Link(l[i],m[i],n[i],o[i]));
 }
 
-/*
-Matrix4d ForwardKine(double angle)
+Matrix4d manipulator::forwardKine(VectorXd angle)
 {
-	Link ;
-	Matrix4d T;
-	Matrix4d F;
+	return forwardKine(angle, links.size());
 	
-	T=a.Transform(angle);
-	
-	
-	
-	
-	
-	
-	return F;
-//todo
 }
-*/
+
+MatrixXd manipulator::getJacobian(VectorXd angle)
+{
+	MatrixXd Jacobian(6, angle.size());
+	Vector3d z, p, p_minus1, pn;
+	
+	pn = TRANS(forwardKine(angle));
+	
+	for(int i = 0; links.size(); i++)
+	{
+		p_minus1 = TRANS(forwardKine(angle, i));
+		p = pn - p_minus1;
+		
+		z = ROT(forwardKine(angle, i)).col(2);
+		
+		Jacobian.block<3,1>(0,i) = z.cross(p);
+		Jacobian.block<3,1>(3,i) = z; 
+	}
+	
+	return Jacobian;
+}
+
+MatrixXd manipulator::testGetJacobian(VectorXd angle)
+{
+	// TODO
+}
+
+Matrix4d manipulator::forwardKine(VectorXd angle, int to_idx)
+{
+	Matrix4d T = Matrix4d::Identity();
+	
+	for(int i = 0; i < to_idx; i++)	
+	{
+		T *= links[i]->Transform(angle(i) ); // A->B = (*A).B
+	}
+
+	return T;
+}
+
 int main()
 {
 	std::ofstream ofs("position.txt");
@@ -85,7 +130,7 @@ int main()
 	Link A(0.0,0.0,0.0,0.0);
 	Link B(l1,0.0,0.0,0.0);
 	A.a=l1;
-	B.a=l2;
+	B.a=l2;	
 	
 	manipulator X(l1);
 	manipulator Y(l2);
@@ -102,5 +147,11 @@ int main()
 		
 		ofs << t << " " << m(0) << " " << m(1) << " " << m(2) << " " << n(0) << " " << n(1) << " " << n(2) << "\n" << std::endl;
 	}
+	
+	VectorXd angles(3);
+	angles << 0, 0 , 0;
+	
+	std::cout << X.forwardKine(angles) << std::endl;
+// 	forwardKine(angle, to_idx)
 	return 0;
 }

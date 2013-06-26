@@ -1,1 +1,1 @@
-/home/saka/GitRepo/renew/CMakeFiles/helloDemo.dir
+/home/kirill/programs/Nagai/force_control2/renew/CMakeFiles/helloDemo.dir
