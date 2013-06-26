@@ -5,8 +5,8 @@
 
 #define twidth 0.001
 #define TMAX 5.0
-#define l1 0.5
-#define l2 0.5
+#define l1 1.0
+#define l2 1.0
 
 using namespace Eigen;
 
@@ -44,7 +44,7 @@ Matrix4d Link::Transform(double angle)
 	
 	T(0,0)=cos(theta);					T(0,1)=-sin(theta);				T(0,2)=0.0;				T(0,3)=a;
 	T(1,0)=sin(theta)*cos(alpha);		T(1,1)=cos(theta)*cos(alpha);	T(1,2)=-sin(alpha);		T(0,3)=-sin(alpha)*offset;
-	T(2,0)=sin(theta)*sin(alpha);		T(2,1)=cos(theta)*sin(alpha);	T(2,2)=cos(angle);		T(0,3)=cos(alpha)*offset;
+	T(2,0)=sin(theta)*sin(alpha);		T(2,1)=cos(theta)*sin(alpha);	T(2,2)=cos(alpha);		T(0,3)=cos(alpha)*offset;
 	T(3,0)=0.0;							T(3,1)=0.0;						T(3,2)=0.0;				T(3,3)=1.0;
 	return T;
 }
@@ -93,12 +93,12 @@ int main()
 	Vector4d m,n;
 	
 	for(t=0.0;t<TMAX;t+=twidth){
-		A.theta=2*M_PI*sin(0.5*t);
-		B.theta=M_PI*sin(0.25*t);
+		A.theta=2*M_PI*t;
+		B.theta=2*M_PI*t;
 		T_1=A.Transform(A.theta);
 		T_2=B.Transform(B.theta);
 		m=T_1*X.x;
-		n=T_1*T_2*Y.x;
+		n=m+T_1*T_2*Y.x;
 		
 		ofs << t << " " << m(0) << " " << m(1) << " " << m(2) << " " << n(0) << " " << n(1) << " " << n(2) << "\n" << std::endl;
 	}
