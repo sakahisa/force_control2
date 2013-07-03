@@ -7,7 +7,8 @@
 #define twidth 0.001
 #define TMAX 5.0
 #define l1 1.0
-#define l2 1.0
+#define l2 0.5
+#define l3 0.25
 
 #define TRANS(x) x.block<3,1>(0,3)
 #define ROT(x) x.block<3,3>(0,0) 
@@ -27,28 +28,29 @@ class Link
 class manipulator
 {
 	public:
-	Vector4d x;
 	
-	manipulator(){};
-	
-	// camelCase	
+	manipulator();
+
+	manipulator(VectorXd angle);
+		
 	Matrix4d forwardKine(VectorXd angle);
 	Matrix4d forwardKine(VectorXd angle, int to_idx);
 	
 	MatrixXd getJacobian(VectorXd angle);
 	MatrixXd testGetJacobian(VectorXd angle);
-	
-	manipulator(double a);
+
 	std::vector<Link* > links;
 	
 };
-Link::Link(double l,double m,double n,double o){
+
+
+Link::Link(double l,double m,double n,double o)
+{
 	a=l;
 	alpha=m;
 	offset=n;
 	theta=o;
 }
-
 
 Matrix4d Link::Transform(double angle)
 {
@@ -57,30 +59,60 @@ Matrix4d Link::Transform(double angle)
 	theta=angle;
 	
 	T(0,0)=cos(theta);					T(0,1)=-sin(theta);				T(0,2)=0.0;				T(0,3)=a;
-	T(1,0)=sin(theta)*cos(alpha);		T(1,1)=cos(theta)*cos(alpha);	T(1,2)=-sin(alpha);		T(0,3)=-sin(alpha)*offset;
-	T(2,0)=sin(theta)*sin(alpha);		T(2,1)=cos(theta)*sin(alpha);	T(2,2)=cos(alpha);		T(0,3)=cos(alpha)*offset;
+	T(1,0)=sin(theta)*cos(alpha);		T(1,1)=cos(theta)*cos(alpha);	T(1,2)=-sin(alpha);		T(1,3)=-sin(alpha)*offset;
+	T(2,0)=sin(theta)*sin(alpha);		T(2,1)=cos(theta)*sin(alpha);	T(2,2)=cos(alpha);		T(2,3)=cos(alpha)*offset;
 	T(3,0)=0.0;							T(3,1)=0.0;						T(3,2)=0.0;				T(3,3)=1.0;
+
 	return T;
 }
 
-
-
-manipulator::manipulator(double a){
-	//links.size() -> 0
-	//links[0] = asdasd
+manipulator::manipulator()
+{
 	int dof = 3;
-	double l[3] = {0.1, 0.05, 0.025};
-	double m[3] = {0.1, 0.05, 0.025};
-	double n[3] = {0.1, 0.05, 0.025};
-	double o[3] = {0.1, 0.05, 0.025};
+	VectorXd l(3);
+	l << 0.0, l1, l2;
+	VectorXd m(3);
+	m << 0.0, 0.0, 0.0;
+	VectorXd n(3);
+	n << 0.0, 0.0, 0.0;
+	VectorXd o(3);
+	o << 0.0, 0.0, 0.0;
 	
-	for(int i = 0; i < dof; i++) links.push_back(new Link(l[i],m[i],n[i],o[i]));
+	for(int i = 0; i < dof; i++) links.push_back(new Link(l(i),m(i),n(i),o(i)));
+}
+
+manipulator::manipulator(VectorXd angle)
+{
+	int dof = 3;
+	VectorXd l(3);
+	l << 0.0, l1, l2;
+	VectorXd m(3);
+	m << 0.0, 0.0, 0.0;
+	VectorXd n(3);
+	n << 0.0, 0.0, 0.0;
+	VectorXd o(3);
+	o = angle;
+	
+	for(int i = 0; i < dof; i++) links.push_back(new Link(l(i),m(i),n(i),o(i)));
 }
 
 Matrix4d manipulator::forwardKine(VectorXd angle)
 {
 	return forwardKine(angle, links.size());
 	
+}
+
+Matrix4d manipulator::forwardKine(VectorXd angle, int to_idx)
+{
+	Matrix4d T = Matrix4d::Identity();
+	
+	for(int i = 0; i < to_idx; i++)	
+	{
+
+		T *= links[i]->Transform(angle(i) ); // A->B = (*A).B
+	}
+
+	return T;
 }
 
 MatrixXd manipulator::getJacobian(VectorXd angle)
@@ -109,49 +141,50 @@ MatrixXd manipulator::testGetJacobian(VectorXd angle)
 	// TODO
 }
 
-Matrix4d manipulator::forwardKine(VectorXd angle, int to_idx)
+void initialize(Vector4d a[3])
 {
-	Matrix4d T = Matrix4d::Identity();
-	
-	for(int i = 0; i < to_idx; i++)	
-	{
-		T *= links[i]->Transform(angle(i) ); // A->B = (*A).B
+	for(int i = 0; i < 3; i ++){
+		a[i](0)=0.0;
+		a[i](1)=0.0;
+		a[i](2)=0.0;
+		a[i](3)=1.0;
 	}
-
-	return T;
+	a[0](0)=l1;
+	a[1](0)=l2;
+	a[2](0)=l3;
 }
-
+ 
+ 
+ 
+ 
 int main()
 {
 	std::ofstream ofs("position.txt");
 	
+	int i;
 	double t;
-	Matrix4d T_1,T_2;
-	Link A(0.0,0.0,0.0,0.0);
-	Link B(l1,0.0,0.0,0.0);
-	A.a=l1;
-	B.a=l2;	
-	
-	manipulator X(l1);
-	manipulator Y(l2);
-	
-	Vector4d m,n;
-	
-	for(t=0.0;t<TMAX;t+=twidth){
-		A.theta=2*M_PI*t;
-		B.theta=2*M_PI*t;
-		T_1=A.Transform(A.theta);
-		T_2=B.Transform(B.theta);
-		m=T_1*X.x;
-		n=m+T_1*T_2*Y.x;
-		
-		ofs << t << " " << m(0) << " " << m(1) << " " << m(2) << " " << n(0) << " " << n(1) << " " << n(2) << "\n" << std::endl;
-	}
+	Link A;
+	manipulator X;
 	
 	VectorXd angles(3);
-	angles << 0, 0 , 0;
 	
-	std::cout << X.forwardKine(angles) << std::endl;
-// 	forwardKine(angle, to_idx)
+	Vector4d a[3];
+	
+	initialize(a);
+	
+	
+	
+	for(t=0.0;t<TMAX;t+=twidth){
+		angles << 2*M_PI*t/10, 2*M_PI*t/5, 2*M_PI*t*5/5;
+		manipulator X(angles);
+		for(i=0;i<3;i++){
+			a[i]=X.forwardKine(angles,i+1)*a[i];
+			a[i](3)=1.0;
+		}
+		ofs << t << "\t" << a[0].transpose() << "\t" << a[1].transpose() << "\t" << a[2].transpose() << "\n" << std::endl;
+		
+		initialize(a);
+	}
+	std::cout << X.getJacobian(angles);
 	return 0;
 }
