@@ -37,7 +37,7 @@ class manipulator
 	Matrix4d forwardKine(VectorXd angle, int to_idx);
 	
 	MatrixXd getJacobian(VectorXd angle);
-	MatrixXd testGetJacobian(VectorXd angle);
+	MatrixXd testGetJacobian(VectorXd angle, Vector4d v);
 
 	std::vector<Link* > links;
 	
@@ -136,14 +136,27 @@ MatrixXd manipulator::getJacobian(VectorXd angle)
 	return Jacobian;
 }
 
-MatrixXd manipulator::testGetJacobian(VectorXd angle)
+MatrixXd manipulator::testGetJacobian(VectorXd angle, Vector4d v)
 {
-	// TODO
+	MatrixXd Jacobian(6,angle.size());
+	VectorXd dangle;
+	dangle=angle;
+	double V;
+	
+	for(int i; i<3; i++)
+	{
+		for(int j; j<3; j++)
+		{
+			Jacobian(i,j)=v(i)/angle(j);
+		}
+	}
+	return Jacobian;
 }
 
 void initialize(Vector4d a[3])
 {
-	for(int i = 0; i < 3; i ++){
+	for(int i = 0; i < 3; i ++)
+	{
 		a[i](0)=0.0;
 		a[i](1)=0.0;
 		a[i](2)=0.0;
@@ -168,23 +181,31 @@ int main()
 	
 	VectorXd angles(3);
 	
-	Vector4d a[3];
+	Vector4d a[3]=VectorXd::Zero(3);
+	Vector4d a2[3]=VectorXd::Zero(3);
+	Vector4d da[3]=VectorXd::Zero(3);
 	
 	initialize(a);
 	
 	
 	
 	for(t=0.0;t<TMAX;t+=twidth){
-		angles << 2*M_PI*t/10, 2*M_PI*t/5, 2*M_PI*t*5/5;
+		angles << 2*M_PI*t/10, 2*M_PI*t/5, 2*M_PI*t;
 		manipulator X(angles);
-		for(i=0;i<3;i++){
+		for(i=0;i<3;i++)
+		{
 			a[i]=X.forwardKine(angles,i+1)*a[i];
 			a[i](3)=1.0;
 		}
 		ofs << t << "\t" << a[0].transpose() << "\t" << a[1].transpose() << "\t" << a[2].transpose() << "\n" << std::endl;
 		
+		for(i=0;i<3;i++)
+		{
+			da[i]=(a[i]-a2[i])/twidth;			//verocity
+			a2[i]=a[i];
+		}
 		initialize(a);
 	}
-	std::cout << X.getJacobian(angles);
+	std::cout << X.getJacobian(angles) << " " << X.testGetJacobian(angles/t,da[2]) << "\n";
 	return 0;
 }
