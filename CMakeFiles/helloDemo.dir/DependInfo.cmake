@@ -4,7 +4,7 @@ SET(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 SET(CMAKE_DEPENDS_CHECK_CXX
-  "/home/kirill/programs/Nagai/force_control2/main.cpp" "/home/kirill/programs/Nagai/force_control2/CMakeFiles/helloDemo.dir/main.o"
+  "/home/kirill/programs/Nagai/force_control2/main.cpp" "/home/kirill/programs/Nagai/force_control2/CMakeFiles/helloDemo.dir/main.cpp.o"
   )
 SET(CMAKE_CXX_COMPILER_ID "GNU")
 

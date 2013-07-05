@@ -31,11 +31,17 @@ CMAKE_COMMAND = /usr/bin/cmake
 # The command to remove a file.
 RM = /usr/bin/cmake -E remove -f
 
+# Escaping for special characters.
+EQUALS = =
+
+# The program to use to edit the cache.
+CMAKE_EDIT_COMMAND = /usr/bin/ccmake
+
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/saka/GitRepo/fo2/force_control2/renew
+CMAKE_SOURCE_DIR = /home/kirill/programs/Nagai/force_control2/renew
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/saka/GitRepo/fo2/force_control2/renew
+CMAKE_BINARY_DIR = /home/kirill/programs/Nagai/force_control2/renew
 
 # Include any dependencies generated for this target.
 include CMakeFiles/helloDemo.dir/depend.make
@@ -48,17 +54,17 @@ include CMakeFiles/helloDemo.dir/flags.make
 
 CMakeFiles/helloDemo.dir/main.cpp.o: CMakeFiles/helloDemo.dir/flags.make
 CMakeFiles/helloDemo.dir/main.cpp.o: main.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/saka/GitRepo/fo2/force_control2/renew/CMakeFiles $(CMAKE_PROGRESS_1)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/kirill/programs/Nagai/force_control2/renew/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/helloDemo.dir/main.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/helloDemo.dir/main.cpp.o -c /home/saka/GitRepo/fo2/force_control2/renew/main.cpp
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/helloDemo.dir/main.cpp.o -c /home/kirill/programs/Nagai/force_control2/renew/main.cpp
 
 CMakeFiles/helloDemo.dir/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/helloDemo.dir/main.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/saka/GitRepo/fo2/force_control2/renew/main.cpp > CMakeFiles/helloDemo.dir/main.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/kirill/programs/Nagai/force_control2/renew/main.cpp > CMakeFiles/helloDemo.dir/main.cpp.i
 
 CMakeFiles/helloDemo.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/helloDemo.dir/main.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/saka/GitRepo/fo2/force_control2/renew/main.cpp -o CMakeFiles/helloDemo.dir/main.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/kirill/programs/Nagai/force_control2/renew/main.cpp -o CMakeFiles/helloDemo.dir/main.cpp.s
 
 CMakeFiles/helloDemo.dir/main.cpp.o.requires:
 .PHONY : CMakeFiles/helloDemo.dir/main.cpp.o.requires
@@ -94,6 +100,6 @@ CMakeFiles/helloDemo.dir/clean:
 .PHONY : CMakeFiles/helloDemo.dir/clean
 
 CMakeFiles/helloDemo.dir/depend:
-	cd /home/saka/GitRepo/fo2/force_control2/renew && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/saka/GitRepo/fo2/force_control2/renew /home/saka/GitRepo/fo2/force_control2/renew /home/saka/GitRepo/fo2/force_control2/renew /home/saka/GitRepo/fo2/force_control2/renew /home/saka/GitRepo/fo2/force_control2/renew/CMakeFiles/helloDemo.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/kirill/programs/Nagai/force_control2/renew && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/kirill/programs/Nagai/force_control2/renew /home/kirill/programs/Nagai/force_control2/renew /home/kirill/programs/Nagai/force_control2/renew /home/kirill/programs/Nagai/force_control2/renew /home/kirill/programs/Nagai/force_control2/renew/CMakeFiles/helloDemo.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/helloDemo.dir/depend
 

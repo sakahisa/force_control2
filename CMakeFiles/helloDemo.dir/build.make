@@ -52,37 +52,37 @@ include CMakeFiles/helloDemo.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/helloDemo.dir/flags.make
 
-CMakeFiles/helloDemo.dir/main.o: CMakeFiles/helloDemo.dir/flags.make
-CMakeFiles/helloDemo.dir/main.o: main.cpp
+CMakeFiles/helloDemo.dir/main.cpp.o: CMakeFiles/helloDemo.dir/flags.make
+CMakeFiles/helloDemo.dir/main.cpp.o: main.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/kirill/programs/Nagai/force_control2/CMakeFiles $(CMAKE_PROGRESS_1)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/helloDemo.dir/main.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/helloDemo.dir/main.o -c /home/kirill/programs/Nagai/force_control2/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/helloDemo.dir/main.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/helloDemo.dir/main.cpp.o -c /home/kirill/programs/Nagai/force_control2/main.cpp
 
-CMakeFiles/helloDemo.dir/main.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/helloDemo.dir/main.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/kirill/programs/Nagai/force_control2/main.cpp > CMakeFiles/helloDemo.dir/main.i
+CMakeFiles/helloDemo.dir/main.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/helloDemo.dir/main.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/kirill/programs/Nagai/force_control2/main.cpp > CMakeFiles/helloDemo.dir/main.cpp.i
 
-CMakeFiles/helloDemo.dir/main.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/helloDemo.dir/main.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/kirill/programs/Nagai/force_control2/main.cpp -o CMakeFiles/helloDemo.dir/main.s
+CMakeFiles/helloDemo.dir/main.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/helloDemo.dir/main.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/kirill/programs/Nagai/force_control2/main.cpp -o CMakeFiles/helloDemo.dir/main.cpp.s
 
-CMakeFiles/helloDemo.dir/main.o.requires:
-.PHONY : CMakeFiles/helloDemo.dir/main.o.requires
+CMakeFiles/helloDemo.dir/main.cpp.o.requires:
+.PHONY : CMakeFiles/helloDemo.dir/main.cpp.o.requires
 
-CMakeFiles/helloDemo.dir/main.o.provides: CMakeFiles/helloDemo.dir/main.o.requires
-	$(MAKE) -f CMakeFiles/helloDemo.dir/build.make CMakeFiles/helloDemo.dir/main.o.provides.build
-.PHONY : CMakeFiles/helloDemo.dir/main.o.provides
+CMakeFiles/helloDemo.dir/main.cpp.o.provides: CMakeFiles/helloDemo.dir/main.cpp.o.requires
+	$(MAKE) -f CMakeFiles/helloDemo.dir/build.make CMakeFiles/helloDemo.dir/main.cpp.o.provides.build
+.PHONY : CMakeFiles/helloDemo.dir/main.cpp.o.provides
 
-CMakeFiles/helloDemo.dir/main.o.provides.build: CMakeFiles/helloDemo.dir/main.o
+CMakeFiles/helloDemo.dir/main.cpp.o.provides.build: CMakeFiles/helloDemo.dir/main.cpp.o
 
 # Object files for target helloDemo
 helloDemo_OBJECTS = \
-"CMakeFiles/helloDemo.dir/main.o"
+"CMakeFiles/helloDemo.dir/main.cpp.o"
 
 # External object files for target helloDemo
 helloDemo_EXTERNAL_OBJECTS =
 
-helloDemo: CMakeFiles/helloDemo.dir/main.o
+helloDemo: CMakeFiles/helloDemo.dir/main.cpp.o
 helloDemo: CMakeFiles/helloDemo.dir/build.make
 helloDemo: CMakeFiles/helloDemo.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX executable helloDemo"
@@ -92,7 +92,7 @@ helloDemo: CMakeFiles/helloDemo.dir/link.txt
 CMakeFiles/helloDemo.dir/build: helloDemo
 .PHONY : CMakeFiles/helloDemo.dir/build
 
-CMakeFiles/helloDemo.dir/requires: CMakeFiles/helloDemo.dir/main.o.requires
+CMakeFiles/helloDemo.dir/requires: CMakeFiles/helloDemo.dir/main.cpp.o.requires
 .PHONY : CMakeFiles/helloDemo.dir/requires
 
 CMakeFiles/helloDemo.dir/clean:

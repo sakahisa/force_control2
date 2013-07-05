@@ -181,9 +181,11 @@ int main()
 	
 	VectorXd angles(3);
 	
-	Vector4d a[3]=VectorXd::Zero(3);
-	Vector4d a2[3]=VectorXd::Zero(3);
+	Vector4d a[3]=VectorXd::Zero(3); // Vector4d a[3] <--- vector of vectors ????; std::vector<Vector4d> xxx; xxx.push_back[];
+	Vector4d a2[3]=VectorXd::Zero(3);// 4 X 3 <--- no match ; Vector4d a2[3]=Vector4d::Zero()
 	Vector4d da[3]=VectorXd::Zero(3);
+	
+	//Link a[3]; <--maybe ok but std::vector<Link> <-- is better
 	
 	initialize(a);
 	
@@ -206,6 +208,6 @@ int main()
 		}
 		initialize(a);
 	}
-	std::cout << X.getJacobian(angles) << " " << X.testGetJacobian(angles/t,da[2]) << "\n";
+	std::cout << X.getJacobian(angles) << " " << X.testGetJacobian(angles/t,da[2]) << "\n"; // (angles_new - angles_old)/twidth
 	return 0;
 }
