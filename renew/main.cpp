@@ -110,7 +110,7 @@ Matrix4d manipulator::forwardKine(VectorXd angle, int to_idx)
 	for(int i = 0; i < to_idx; i++)	
 	{
 
-		T *= links[i]->Transform(angle(i) ); // A->B = (*A).B
+		T *= links[i]->Transform(angle(i) ); 
 	}
 
 	return T;
@@ -173,8 +173,6 @@ int main()
 	MatrixXd J(6,angles.size());
 	Matrix4d T;
 	
-	//Link a[3]; <--maybe ok but std::vector<Link> <-- is better
-	
 	for(t=0.0;t<TMAX;t+=twidth){
 		angles << 2*M_PI*t/TMAX, 2*M_PI, 2*M_PI, 0.0;
 		manipulator X(angles);
@@ -207,8 +205,7 @@ int main()
 	
 	cout << "confirm Jacobian Effect ----> v,da[2]:hand velocity \nv:\n" << v << "\nda[2]:\n" << da[2]  << endl;		//confirm Jacobian Effect
 	
-	cout << "Jacobian\n" << J << endl;//" " << X.testGetJacobian(dangles,da[1]) << "\n" << endl; 
-	
+	cout << "Jacobian\n" << J << endl;	
 	
 	J=X.testGetJacobian(dangles,da[2]);
 	
