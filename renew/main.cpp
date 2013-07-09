@@ -13,6 +13,7 @@
 #define TRANS(x) x.block<3,1>(0,3)
 #define ROT(x) x.block<3,3>(0,0) 
 
+using namespace std;
 using namespace Eigen;
 
 class Link
@@ -37,7 +38,7 @@ class manipulator
 	Matrix4d forwardKine(VectorXd angle, int to_idx);
 	
 	MatrixXd getJacobian(VectorXd angle);
-	MatrixXd testGetJacobian(VectorXd angle, Vector4d v);
+	MatrixXd testGetJacobian(VectorXd angle, Vector3d v);
 
 	std::vector<Link* > links;
 	
@@ -68,29 +69,29 @@ Matrix4d Link::Transform(double angle)
 
 manipulator::manipulator()
 {
-	int dof = 3;
-	VectorXd l(3);
-	l << 0.0, l1, l2;
-	VectorXd m(3);
-	m << 0.0, 0.0, 0.0;
-	VectorXd n(3);
-	n << 0.0, 0.0, 0.0;
-	VectorXd o(3);
-	o << 0.0, 0.0, 0.0;
+	int dof = 4;
+	VectorXd l(4);
+	l << 0.0, l1, l2, l3;
+	VectorXd m(4);
+	m << 0.0, 0.0, 0.0, 0.0;
+	VectorXd n(4);
+	n << 0.0, 0.0, 0.0, 0.0;
+	VectorXd o(4);
+	o << 0.0, 0.0, 0.0, 0.0;
 	
 	for(int i = 0; i < dof; i++) links.push_back(new Link(l(i),m(i),n(i),o(i)));
 }
 
 manipulator::manipulator(VectorXd angle)
 {
-	int dof = 3;
-	VectorXd l(3);
-	l << 0.0, l1, l2;
-	VectorXd m(3);
-	m << 0.0, 0.0, 0.0;
-	VectorXd n(3);
-	n << 0.0, 0.0, 0.0;
-	VectorXd o(3);
+	int dof = 4;
+	VectorXd l(4);
+	l << 0.0, l1, l2, l3;
+	VectorXd m(4);
+	m << 0.0, 0.0, 0.0, 0.0;
+	VectorXd n(4);
+	n << 0.0, 0.0, 0.0, 0.0;
+	VectorXd o(4);
 	o = angle;
 	
 	for(int i = 0; i < dof; i++) links.push_back(new Link(l(i),m(i),n(i),o(i)));
@@ -122,7 +123,7 @@ MatrixXd manipulator::getJacobian(VectorXd angle)
 	
 	pn = TRANS(forwardKine(angle));
 	
-	for(int i = 0; links.size(); i++)
+	for(int i = 0; i < links.size(); i++)
 	{
 		p_minus1 = TRANS(forwardKine(angle, i));
 		p = pn - p_minus1;
@@ -136,39 +137,19 @@ MatrixXd manipulator::getJacobian(VectorXd angle)
 	return Jacobian;
 }
 
-MatrixXd manipulator::testGetJacobian(VectorXd angle, Vector4d v)
+MatrixXd manipulator::testGetJacobian(VectorXd angle, Vector3d v)
 {
 	MatrixXd Jacobian(6,angle.size());
-	VectorXd dangle;
-	dangle=angle;
-	double V;
 	
 	for(int i; i<3; i++)
 	{
-		for(int j; j<3; j++)
+		for(int j; j<angle.size(); j++)
 		{
-			Jacobian(i,j)=v(i)/angle(j);
+			Jacobian(i,j) = v(i) / angle(j);
 		}
 	}
 	return Jacobian;
 }
-
-void initialize(Vector4d a[3])
-{
-	for(int i = 0; i < 3; i ++)
-	{
-		a[i](0)=0.0;
-		a[i](1)=0.0;
-		a[i](2)=0.0;
-		a[i](3)=1.0;
-	}
-	a[0](0)=l1;
-	a[1](0)=l2;
-	a[2](0)=l3;
-}
- 
- 
- 
  
 int main()
 {
@@ -179,35 +160,60 @@ int main()
 	Link A;
 	manipulator X;
 	
-	VectorXd angles(3);
+	VectorXd angles(4);
+	VectorXd angles2(4);
+	VectorXd dangles(4);
 	
-	Vector4d a[3]=VectorXd::Zero(3); // Vector4d a[3] <--- vector of vectors ????; std::vector<Vector4d> xxx; xxx.push_back[];
-	Vector4d a2[3]=VectorXd::Zero(3);// 4 X 3 <--- no match ; Vector4d a2[3]=Vector4d::Zero()
-	Vector4d da[3]=VectorXd::Zero(3);
+	Vector3d a[4]; 
+	Vector3d a2[4];
+	Vector3d da[4];
+	
+	VectorXd omega;
+	VectorXd v(6);
+	MatrixXd J(6,angles.size());
+	Matrix4d T;
 	
 	//Link a[3]; <--maybe ok but std::vector<Link> <-- is better
 	
-	initialize(a);
-	
-	
-	
 	for(t=0.0;t<TMAX;t+=twidth){
-		angles << 2*M_PI*t/10, 2*M_PI*t/5, 2*M_PI*t;
+		angles << 2*M_PI*t/TMAX, 2*M_PI, 2*M_PI, 0.0;
 		manipulator X(angles);
 		for(i=0;i<3;i++)
 		{
-			a[i]=X.forwardKine(angles,i+1)*a[i];
-			a[i](3)=1.0;
+			T=X.forwardKine(angles,i+2);
+			a[i]=TRANS(T);
 		}
 		ofs << t << "\t" << a[0].transpose() << "\t" << a[1].transpose() << "\t" << a[2].transpose() << "\n" << std::endl;
-		
 		for(i=0;i<3;i++)
 		{
-			da[i]=(a[i]-a2[i])/twidth;			//verocity
+			if(t>twidth/2)
+			{
+				da[i]=(a[i]-a2[i])/twidth;			
+			}
 			a2[i]=a[i];
 		}
-		initialize(a);
+		
+		if(t>twidth/2)
+		{
+			dangles=(angles-angles2)/twidth;
+		}
+		angles2=angles;
+		
 	}
-	std::cout << X.getJacobian(angles) << " " << X.testGetJacobian(angles/t,da[2]) << "\n"; // (angles_new - angles_old)/twidth
+	
+	J=X.getJacobian(angles);
+	
+	v=J*dangles;
+	
+	cout << "confirm Jacobian Effect ----> v,da[2]:hand velocity \nv:\n" << v << "\nda[2]:\n" << da[2]  << endl;		//confirm Jacobian Effect
+	
+	cout << "Jacobian\n" << J << endl;//" " << X.testGetJacobian(dangles,da[1]) << "\n" << endl; 
+	
+	
+	J=X.testGetJacobian(dangles,da[2]);
+	
+	cout << "testJacobian\n" << J << endl;
+	
+	
 	return 0;
 }
