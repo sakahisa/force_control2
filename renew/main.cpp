@@ -11,7 +11,7 @@
 #define l3 0.5
 #define W 500		//cut off
 #define M 1.0
-
+#define D 2.5
 
 #define TRANS(x) x.block<3,1>(0,3)
 #define ROT(x) x.block<3,3>(0,0) 
@@ -46,6 +46,7 @@ class tau
 	VectorXd Cmd,Res,Dis;
 	
 	tau();
+	void Disturbance(VectorXd omega);
 };
 
 class manipulator
@@ -64,7 +65,7 @@ class manipulator
 	
 	Vector6d torque2Force(VectorXd angles, VectorXd tauRef);
 	VectorXd force2Torque(VectorXd angles, Vector6d forceRef);
-	VectorXd forceControl(VectorXd angles, Vector6d forceRef);
+	VectorXd forceControl(VectorXd angles, Vector6d forceRef, VectorXd omega);
 	
 	MatrixXd pseudoInverse(MatrixXd Jacobian);
 	VectorXd moment(VectorXd angles, Vector3d fRef);
@@ -124,6 +125,10 @@ tau::tau(){
 	Dis = Z;
 }
 
+void tau::Disturbance(VectorXd omega){
+	Dis=-D*omega;
+}
+
 manipulator::manipulator()
 {
 	int dof = 3;
@@ -149,12 +154,14 @@ VectorXd manipulator::force2Torque(VectorXd angles, Vector6d forceRef)
 	return getJacobian(angles).transpose()*forceRef;
 }
 
-VectorXd manipulator::forceControl(VectorXd angles, Vector6d forceRef)
+VectorXd manipulator::forceControl(VectorXd angles, Vector6d forceRef, VectorXd omega)
 {
 	/*
 	 * Naoki Oda ?
 	 */
 	Vector6d forceDis;
+	
+	T.Disturbance(omega);
 	
 	F.Cmd = forceRef + F.Dis;
 	T.Cmd = force2Torque(angles,F.Cmd);
@@ -258,7 +265,7 @@ int main()
 //	MatrixXd J(6,angles.size());
 //	J=X.getJacobian(angles);
 	
-	VectorXd omega(3);
+	VectorXd omega=VectorXd::Zero(3);
 
 //	MatrixXd J(6,angles.size());
 //	MatrixXd Jin(angles.size(),6);
@@ -287,7 +294,7 @@ int main()
 		x = TRANS(X.forwardKine(angles,3)); 
 		forceRef.block<3,1>(3,0) = X.moment(angles,fRef);
 		
-		forceRes = X.forceControl(angles,forceRef);
+		forceRes = X.forceControl(angles,forceRef,omega);
 		
 		ofs_f << t << " " << forceRef.transpose() << " " << forceRes.transpose() << endl;
 		ofs_p << t << " " << x.transpose() << endl;
