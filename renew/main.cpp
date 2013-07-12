@@ -297,7 +297,7 @@ int main()
 		omega = X.pseudoInverse(ROT(X.getJacobian(angles)))*v;
 		
 		angles += omega*twidth;
-		cout << angles.transpose() << endl;
+
 /*
 		dx = (x-x2)/twidth;
 		x2 = x;
