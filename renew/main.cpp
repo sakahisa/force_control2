@@ -135,7 +135,7 @@ manipulator::manipulator()
 	VectorXd l(3);
 	l << l1, l2, l3;
 	VectorXd m(3);
-	m << 0.0, M_PI/2, 0.0;
+	m << 0.0, 0.0, 0.0;
 	VectorXd n(3);
 	n << 0.0, 0.0, 0.0;
 	VectorXd o(3);
@@ -266,20 +266,21 @@ int main()
 //	J=X.getJacobian(angles);
 	
 	VectorXd omega=VectorXd::Zero(3);
-
+	
 //	MatrixXd J(6,angles.size());
 //	MatrixXd Jin(angles.size(),6);
 	
 	Vector3d x = TRANS(X.forwardKine(angles,3)); 
+	VectorXd a = VectorXd::Zero(3);
+	VectorXd v = VectorXd::Zero(3);
+	
 //	VectorXd x2 = TRANS(X.forwardKine(angles,3));
 //	Vector3d dx;// std::vector< Vector3d >
-	VectorXd a = VectorXd::Zero(3);
-	VectorXd v = VectorXd::Zero(3);	
+	
 	
 	Vector6d forceRef,forceRes;
-	
 	Vector3d fRef;
-	fRef << 1.0, 1.0, 1.0;
+	fRef << 1.0, 1.0, 0.0;
 	
 	forceRef.block<3,1>(0,0) = fRef;
 	
@@ -291,7 +292,7 @@ int main()
 	
 
 	for(t = 0.0; t < TMAX; t += twidth){
-		x = TRANS(X.forwardKine(angles,3)); 
+		x = TRANS(X.forwardKine(angles,3));
 		forceRef.block<3,1>(3,0) = X.moment(angles,fRef);
 		
 		forceRes = X.forceControl(angles,forceRef,omega);
