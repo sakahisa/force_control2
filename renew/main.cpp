@@ -19,7 +19,37 @@
 using namespace std;
 using namespace Eigen;
 
+template<typename _Matrix_Type_>
+bool svdInverse(const _Matrix_Type_ &a, _Matrix_Type_ &result, double epsilon = std::numeric_limits<typename _Matrix_Type_::Scalar>::epsilon())
+{
+	if(a.rows()<a.cols())
+		return false;
+
+	Eigen::JacobiSVD< _Matrix_Type_ > svd = a.jacobiSvd(Eigen::ComputeFullU |Eigen::ComputeFullV);
+
+	typename _Matrix_Type_::Scalar tolerance = epsilon * std::max(a.cols(),
+	a.rows()) * svd.singularValues().array().abs().maxCoeff();
+
+	result = svd.matrixV() * _Matrix_Type_( (svd.singularValues().array().abs() >
+	tolerance).select(svd.singularValues().array().inverse(), 0) ).asDiagonal() * svd.matrixU().adjoint();
+}
+
 typedef Eigen::Matrix<double, 6, 1> Vector6d;
+
+class baseClass
+{
+	public:
+		Vector6d Dis;
+		void LPF2(Vector6d forceDis);
+};
+
+void baseClass::LPF2(Vector6d forceDis)
+{
+	
+	Vector6d dDis = (forceDis-Dis)*W;	
+	Dis = forceDis;	
+	Dis += dDis*twidth;
+}
 
 class Link
 {
@@ -31,7 +61,7 @@ class Link
 	Matrix4d Transform(double angle);
 };
 
-class force
+class force : public baseClass
 {
 	public:
 	Vector6d Cmd,Res,Dis,dDis;
@@ -49,7 +79,8 @@ class tau
 	void Disturbance(VectorXd omega);
 };
 
-class manipulator
+
+class manipulator : public baseClass
 {
 	public:
 	
@@ -169,7 +200,8 @@ VectorXd manipulator::forceControl(VectorXd angles, Vector6d forceRef, VectorXd 
 	F.Res = torque2Force(angles,T.Res);		//sensor force
 	
 	forceDis = F.Cmd-F.Res;
-	F.LPF(forceDis);
+	//F.LPF(forceDis);
+	F.LPF2(forceDis);
 	
 	return F.Res;
 }
@@ -230,7 +262,10 @@ MatrixXd manipulator::testGetJacobian(VectorXd dangles, Vector3d dx)
 
 MatrixXd manipulator::pseudoInverse(MatrixXd Jacobian)
 {
-	return (Jacobian.transpose()*Jacobian).inverse()*Jacobian.transpose();
+	MatrixXd Inv;
+	MatrixXd JtJ = Jacobian.transpose()*Jacobian;
+	svdInverse(JtJ, Inv);
+	return Inv*Jacobian.transpose();	
 }
 
 VectorXd manipulator::moment(VectorXd angles, Vector3d fRef)
@@ -282,7 +317,7 @@ int main()
 	Vector3d fRef;
 	fRef << 1.0, 1.0, 0.0;
 	
-	forceRef.block<3,1>(0,0) = fRef;
+	forceRef.head(3) = fRef;
 	
 //	forceRef.block<3,1>(3,0) = X.moment(angles,fRef);
 	
@@ -293,7 +328,8 @@ int main()
 
 	for(t = 0.0; t < TMAX; t += twidth){
 		x = TRANS(X.forwardKine(angles,3));
-		forceRef.block<3,1>(3,0) = X.moment(angles,fRef);
+		//forceRef.block<3,1>(3,0) = X.moment(angles,fRef);
+		forceRef.tail(3) = X.moment(angles,fRef);
 		
 		forceRes = X.forceControl(angles,forceRef,omega);
 		
@@ -305,6 +341,7 @@ int main()
 		omega = X.pseudoInverse(ROT(X.getJacobian(angles)))*v;
 		
 		angles += omega*twidth;
+		cout << omega << endl;
 
 /*
 		dx = (x-x2)/twidth;
