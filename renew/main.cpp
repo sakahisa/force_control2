@@ -4,14 +4,14 @@
 #include "Eigen/Dense"
 #include <vector>
 
-#define twidth 0.001
+#define twidth 0.001	//sample time
 #define TMAX 1.0
-#define l1 1.0
-#define l2 0.5
-#define l3 0.5
-#define W 1000		//cut off
-#define M 1.0
-#define D 2.5
+#define l1 1.0			//length of Link1
+#define l2 0.5			//length of Link2
+#define l3 0.5			//length of Link3
+#define W 1000			//cut off
+#define M 1.0			//mass
+#define D 2.5			//coefficient of viscosity
 
 #define TRANS(x) x.block<3,1>(0,3)
 #define ROT(x) x.block<3,3>(0,0) 
@@ -20,6 +20,7 @@ using namespace std;
 using namespace Eigen;
 
 template<typename _Matrix_Type_>
+//SVD
 bool svdInverse(const _Matrix_Type_ &a, _Matrix_Type_ &result, double epsilon = std::numeric_limits<typename _Matrix_Type_::Scalar>::epsilon())
 {
 	if(a.rows()<a.cols())
@@ -113,18 +114,20 @@ Link::Link(double l,double m,double n,double o)
 	offset = n;
 	theta_offset = o;
 }
-
+//Transform Matrix
 Matrix4d Link::Transform(double angle)
 {
 	Matrix4d T;
 	
 	double theta = angle + theta_offset;
-	/*
+	
+/*
 	T(0,0)=cos(theta);					T(0,1)=-sin(theta);				T(0,2)=0.0;				T(0,3)=a;
 	T(1,0)=sin(theta)*cos(alpha);		T(1,1)=cos(theta)*cos(alpha);	T(1,2)=-sin(alpha);		T(1,3)=-sin(alpha)*offset;
 	T(2,0)=sin(theta)*sin(alpha);		T(2,1)=cos(theta)*sin(alpha);	T(2,2)=cos(alpha);		T(2,3)=cos(alpha)*offset;
 	T(3,0)=0.0;							T(3,1)=0.0;						T(3,2)=0.0;				T(3,3)=1.0;
-*/
+*/	
+	
 	T(0,0) = cos(theta);	T(0,1) = -sin(theta)*cos(alpha);		T(0,2) = sin(theta)*sin(alpha);		T(0,3) = a*cos(theta);
 	T(1,0) = sin(theta);	T(1,1) = cos(theta)*cos(alpha);		T(1,2) = -cos(theta)*sin(alpha);		T(1,3) = a*sin(theta);
 	T(2,0) = 0.0;		T(2,1) = sin(alpha);			T(2,2) = cos(alpha);			T(2,3) = offset;
@@ -139,7 +142,7 @@ force::force(){
 	Dis = Z;
 	dDis = Z;
 }
-
+//Low Pass Filter
 void force::LPF(Vector6d forceDis)
 {
 	dDis = (forceDis-Dis)*W;
@@ -152,7 +155,7 @@ tau::tau(){
 	Res = Z;
 	Dis = Z;
 }
-
+//viscous friction
 void tau::Disturbance(VectorXd omega){
 	Dis=-D*omega;
 }
@@ -171,16 +174,17 @@ manipulator::manipulator()
 	
 	for(int i = 0; i < dof; i++) links.push_back(new Link(l(i),m(i),n(i),o(i)));
 }
-
+//torque to force
 Vector6d manipulator::torque2Force(VectorXd angles, VectorXd tauRef)
 {
 	return pseudoInverse(getJacobian(angles)).transpose()*tauRef;
 }
+//force to torque
 VectorXd manipulator::force2Torque(VectorXd angles, Vector6d forceRef)
 {
 	return getJacobian(angles).transpose()*forceRef;
 }
-
+//force controll
 VectorXd manipulator::forceControl(VectorXd angles, Vector6d forceRef, VectorXd omega)
 {
 	Vector6d forceDis;
@@ -193,13 +197,11 @@ VectorXd manipulator::forceControl(VectorXd angles, Vector6d forceRef, VectorXd 
 	F.Res = torque2Force(angles,T.Res);		//sensor force
 	
 	forceDis = F.Cmd-F.Res;
-	//F.LPF(forceDis);
+//	F.LPF(forceDis);
 	F.LPF2(forceDis);
 	
 	return F.Res;
 }
-
-
 
 Matrix4d manipulator::forwardKine(VectorXd angle)
 {
@@ -218,7 +220,7 @@ Matrix4d manipulator::forwardKine(VectorXd angle, int to_idx)
 
 	return T;
 }
-
+//get Jacobian
 MatrixXd manipulator::getJacobian(VectorXd angle)
 {
 	MatrixXd Jacobian(6, angle.size());
@@ -260,7 +262,7 @@ MatrixXd manipulator::pseudoInverse(MatrixXd Jacobian)
 	svdInverse(JtJ, Inv);
 	return Inv*Jacobian.transpose();	
 }
-
+//calculation 
 VectorXd manipulator::moment(VectorXd angles, Vector3d fRef)
 {
 	VectorXd n = VectorXd::Zero(3);
@@ -299,30 +301,29 @@ int main()
 	manipulator X;	
 	
 	VectorXd angles(3);
-/*	
-	VectorXd angles2 = VectorXd::Zero(3);
-	VectorXd dangles(3);
-*/	
 	angles << M_PI/6, M_PI/4, M_PI/3;
-/*	
-	MatrixXd J(6,angles.size());
-	J=X.getJacobian(angles);
-*/	
 	VectorXd omega=VectorXd::Zero(3);
-/*	
-	MatrixXd J(6,angles.size());
-	MatrixXd Jin(angles.size(),6);
-*/	
+	
 	Vector3d x = TRANS(X.forwardKine(angles,3)); 
 	VectorXd a = VectorXd::Zero(3);
 	VectorXd v = VectorXd::Zero(3);
-/*	
-	VectorXd x2 = TRANS(X.forwardKine(angles,3));
-	Vector3d dx;// std::vector<Vector3d >
-*/	
+	
 	Vector3d xRef, Error;
-//	xRef << 0.75, 1.0, 0.0;
 /*	
+	VectorXd angles2 = VectorXd::Zero(3);
+	VectorXd dangles(3);
+	
+	MatrixXd J(6,angles.size());
+	J=X.getJacobian(angles);
+	
+	MatrixXd J(6,angles.size());
+	MatrixXd Jin(angles.size(),6);
+
+	VectorXd x2 = TRANS(X.forwardKine(angles,3));
+	Vector3d dx;// std::vector<Vector3d >	
+	
+	xRef << 0.75, 1.0, 0.0;
+	
 	Vector6d forceRef,forceRes;
 	Vector3d fRef;
 	fRef << 1.0, 1.0, 1.0;
