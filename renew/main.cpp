@@ -262,7 +262,7 @@ MatrixXd manipulator::pseudoInverse(MatrixXd Jacobian)
 	svdInverse(JtJ, Inv);
 	return Inv*Jacobian.transpose();	
 }
-//calculation 
+//calculation moment
 VectorXd manipulator::moment(VectorXd angles, Vector3d fRef)
 {
 	VectorXd n = VectorXd::Zero(3);
