@@ -277,8 +277,9 @@ VectorXd manipulator::moment(VectorXd angles, Vector3d fRef)
 
 VectorXd manipulator::invKine(Vector3d Error, VectorXd angles)
 {
-	double K = Error.norm()*10;
-	if(K < 0.0001)			//stop
+	double K = Error.norm()*1000;
+	cout << K << endl;
+	if(Error.norm() < 0.0001)			//stop
 	{
 		return angles;
 	}
