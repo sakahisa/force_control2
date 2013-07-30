@@ -45,7 +45,6 @@ class baseClass
 
 void baseClass::LPF2(Vector6d forceDis)
 {
-	
 	Vector6d dDis = (forceDis-Dis)*W;	
 	Dis += dDis*twidth;
 }
