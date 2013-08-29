@@ -1,1 +1,1 @@
-/usr/bin/c++   -g    CMakeFiles/helloDemo.dir/main.cpp.o  -o helloDemo -rdynamic 
+/usr/bin/c++   -fpermissive -g    CMakeFiles/helloDemo.dir/main.cpp.o  -o helloDemo -rdynamic 

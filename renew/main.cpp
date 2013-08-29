@@ -40,10 +40,11 @@ class baseClass
 {
 	public:
 	Vector6d Dis;
-	void LPF2(Vector6d forceDis);
+	void LPF(Vector6d forceDis);
 };
 
-void baseClass::LPF2(Vector6d forceDis)
+//Low Pass Filter
+void baseClass::LPF(Vector6d forceDis)
 {
 	Vector6d dDis = (forceDis-Dis)*W;	
 	Dis += dDis*twidth;
@@ -65,7 +66,6 @@ class force : public baseClass
 	Vector6d Cmd,Res,Dis,dDis;
 	
 	force();
-	void LPF(Vector6d forceDis);
 };
 
 class tau
@@ -101,6 +101,9 @@ class manipulator : public baseClass
 	
 	VectorXd invKine(Vector3d Error, VectorXd angles);
 	
+	Vector3d COMpos(int start, VectorXd angles);
+	MatrixXd getCOMJacobian(VectorXd angles);
+	
 	std::vector<Link* > links;
 };
 
@@ -134,26 +137,23 @@ Matrix4d Link::Transform(double angle)
 	return T;
 }
 
-force::force(){
+force::force()
+{
 	Vector6d Z = VectorXd::Zero(6);
 	Cmd = Z;
 	Res = Z;
 	Dis = Z;
 	dDis = Z;
 }
-//Low Pass Filter
-void force::LPF(Vector6d forceDis)
-{
-	dDis = (forceDis-Dis)*W;
-	Dis += dDis*twidth;
-}
 
-tau::tau(){
+tau::tau()
+{
 	VectorXd Z = VectorXd::Zero(3);
 	Cmd = Z;
 	Res = Z;
 	Dis = Z;
 }
+
 //viscous friction
 void tau::Disturbance(VectorXd omega){
 	Dis=-D*omega;
@@ -173,16 +173,19 @@ manipulator::manipulator()
 	
 	for(int i = 0; i < dof; i++) links.push_back(new Link(l(i),m(i),n(i),o(i)));
 }
+
 //torque to force
 Vector6d manipulator::torque2Force(VectorXd angles, VectorXd tauRef)
 {
 	return pseudoInverse(getJacobian(angles)).transpose()*tauRef;
 }
+
 //force to torque
 VectorXd manipulator::force2Torque(VectorXd angles, Vector6d forceRef)
 {
 	return getJacobian(angles).transpose()*forceRef;
 }
+
 //force controll
 VectorXd manipulator::forceControl(VectorXd angles, Vector6d forceRef, VectorXd omega)
 {
@@ -196,8 +199,7 @@ VectorXd manipulator::forceControl(VectorXd angles, Vector6d forceRef, VectorXd 
 	F.Res = torque2Force(angles,T.Res);		//sensor force
 	
 	forceDis = F.Cmd-F.Res;
-//	F.LPF(forceDis);
-	F.LPF2(forceDis);
+	F.LPF(forceDis);
 	
 	return F.Res;
 }
@@ -214,25 +216,25 @@ Matrix4d manipulator::forwardKine(VectorXd angle, int to_idx)
 	for(int i = 0; i < to_idx; i++)	
 	{
 		assert (i <= links.size());
-		T *= links[i]->Transform(angle(i) ); 
+		T *= links[i]->Transform(angle(i)); 
 	}
 
 	return T;
 }
 //get Jacobian
-MatrixXd manipulator::getJacobian(VectorXd angle)
+MatrixXd manipulator::getJacobian(VectorXd angles)
 {
-	MatrixXd Jacobian(6, angle.size());
+	MatrixXd Jacobian(6, angles.size());
 	Vector3d z, p, p_minus1, pn;
 	
-	pn = TRANS(forwardKine(angle));
+	pn = TRANS(forwardKine(angles));
 	
 	for(int i = 0; i < links.size(); i++)
 	{
-		p_minus1 = TRANS(forwardKine(angle, i));
+		p_minus1 = TRANS(forwardKine(angles, i));
 		p = pn - p_minus1;
 		
-		z = ROT(forwardKine(angle, i)).col(2);
+		z = ROT(forwardKine(angles, i)).col(2);
 		
 		Jacobian.block<3,1>(0,i) = z.cross(p);
 		Jacobian.block<3,1>(3,i) = z; 
@@ -261,6 +263,7 @@ MatrixXd manipulator::pseudoInverse(MatrixXd Jacobian)
 	svdInverse(JtJ, Inv);
 	return Inv*Jacobian.transpose();	
 }
+
 //calculation moment
 VectorXd manipulator::moment(VectorXd angles, Vector3d fRef)
 {
@@ -279,7 +282,7 @@ VectorXd manipulator::moment(VectorXd angles, Vector3d fRef)
 VectorXd manipulator::invKine(Vector3d Error, VectorXd angles)
 {
 	double K = Error.norm()*1000;
-	cout << K << endl;
+//	cout << K << endl;
 	if(Error.norm() < 0.0001)			//stop
 	{
 		return angles;
@@ -290,12 +293,60 @@ VectorXd manipulator::invKine(Vector3d Error, VectorXd angles)
 	return angles;
 }
 
+//Center of Mass Position calculating
+Vector3d manipulator::COMpos(int start, VectorXd angles)		//start -> joint number
+{
+	Link A;
+	VectorXd ans = VectorXd::Zero(4);
+	Vector4d c[3]; 
+	c[0] << l1/2, 0.0, 0.0, 1.0;
+	c[1] << l2/2, 0.0, 0.0, 1.0;
+	c[2] << l3/2, 0.0, 0.0, 1.0;
+	
+	double M_total = M * (3 - start);
+	
+	for(int i = start; i < 3; i++)
+	{
+		c[i] = forwardKine(angles, start) * c[i];
+	}
+	for(i = start; i < 3; i++)
+	{
+		ans += (c[i] * M)/M_total;
+	}
+	
+	return ans.block<3,1>(0,0);
+}
+
+//COM Jacobian
+MatrixXd manipulator::getCOMJacobian(VectorXd angles)
+{
+	MatrixXd COMJacobian(6, angles.size());
+	Vector3d COM[angles.size()];
+	Vector3d z, p_minus, p;
+	
+	for(int i = 0; i < angles.size(); i++)
+	{
+		COM[i] = COMpos(i, angles);
+	}
+	
+	for(int i = 0; i < links.size(); i++)
+	{
+		p_minus = TRANS(forwardKine(angles, i));
+		p = COM[i] - p_minus;
+		
+		z = ROT(forwardKine(angles, i)).col(2);
+		
+		COMJacobian.block<3,1>(0,i) = z.cross(p);
+		COMJacobian.block<3,1>(3,i) = z; 
+	}
+	
+	return COMJacobian;
+}
+
 int main()
 {
-//	ofstream ofs_f("force.txt");
-	ofstream ofs_p("position.txt");
+	ofstream ofs_p("position_J.txt");
 	
-	double t;
 	Link A;
 	manipulator X;	
 	
@@ -304,76 +355,26 @@ int main()
 	VectorXd omega=VectorXd::Zero(3);
 	
 	Vector3d x = TRANS(X.forwardKine(angles,3)); 
-	VectorXd a = VectorXd::Zero(3);
 	VectorXd v = VectorXd::Zero(3);
+	VectorXd a = VectorXd::Zero(3);
 	
 	Vector3d xRef, Error;
-/*	
-	VectorXd angles2 = VectorXd::Zero(3);
-	VectorXd dangles(3);
 	
-	MatrixXd J(6,angles.size());
-	J=X.getJacobian(angles);
+	MatrixXd COMJacobian(6, angles.size());
 	
-	MatrixXd J(6,angles.size());
-	MatrixXd Jin(angles.size(),6);
-
-	VectorXd x2 = TRANS(X.forwardKine(angles,3));
-	Vector3d dx;// std::vector<Vector3d >	
-	
-	xRef << 0.75, 1.0, 0.0;
-	
-	Vector6d forceRef,forceRes;
-	Vector3d fRef;
-	fRef << 1.0, 1.0, 1.0;
-	
-	forceRef.head(3) = fRef;
-	
-	forceRef.block<3,1>(3,0) = X.moment(angles,fRef);
-	
-	forceRes = X.forceControl(angles,forceRef);
-	
-	cout << forceRef.transpose() << endl << forceRes.transpose() << endl << endl;
-*/	
-	
-	
-	for(t = 0.0; t < TMAX; t += twidth){
+	for(double t = 0.0; t < TMAX; t += twidth)
+	{
 		xRef << 0.75 * sin(t/(TMAX)), 0.75 * cos(t/(TMAX)), 0.0;
 		
-		ofs_p << t << " " << xRef.transpose() << " " << x.transpose() << endl;
+//		ofs_p << t << " " << xRef.transpose() << " " << x.transpose() << endl;
 		Error = xRef - x;
 		angles = X.invKine(Error, angles);
 		x = TRANS(X.forwardKine(angles,3));
 		
-/*		
-		forceRef.tail(3) = X.moment(angles,fRef);
-		forceRes = X.forceControl(angles,forceRef,omega);
+		COMJacobian = X.getCOMJacobian(angles);
 		
-		ofs_f << t << " " << forceRef.transpose() << " " << forceRes.transpose() << endl;
-
-		a = forceRes.head(3)/M;
-		v += a*twidth;
-		omega = X.pseudoInverse(ROT(X.getJacobian(angles)))*v;
-		
-		angles += omega*twidth;
-		
-		cout << omega.transpose() << endl;
-		
-
-		dx = (x-x2)/twidth;
-		x2 = x;
-		
-		dangles = (angles-angles2)/twidth;
-		angles2 = angles;
-		
-		J = X.getJacobian(angles);
-		v = J*dangles;
-		Jin = X.pseudoInverse(J);
-		omega = ROT(J).inverse()*v.head(3);
-
-		cout << "confirm Jacobian Effect ----> v:dx" <<endl<< v.head(3).transpose() <<endl<<  dx.transpose()  << endl;		//confirm Jacobian Effect
-		cout << "confirm Jacobian.inverse Effect ----> dangles,omega" <<endl<< dangles.transpose() <<endl<<  omega.transpose()  << endl;		//confirm Jacobian Effect
-*/
+		ofs_p << COMJacobian << endl << endl;
+	//	std::cout << COM.transpose() << " " << angles.transpose() << std::endl;
 	}
 	return 0;
 }
