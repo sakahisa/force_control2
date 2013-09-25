@@ -311,7 +311,7 @@ Vector3d manipulator::COMpos(int start, VectorXd angles)		//start -> joint numbe
 	}
 	for(i = start; i < 3; i++)
 	{
-		ans += (c[i] * M)/M_total;
+		ans += (c[i] * M) / M_total;
 	}
 	
 	return ans.block<3,1>(0,0);
@@ -359,6 +359,8 @@ int main()
 	VectorXd a = VectorXd::Zero(3);
 	
 	Vector3d xRef, Error;
+	
+	VectorXd dangles
 	
 	MatrixXd COMJacobian(6, angles.size());
 	

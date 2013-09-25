@@ -1,1 +1,0 @@
-/home/kirill/programs/Nagai/force_control2/CMakeFiles/helloDemo.dir
