@@ -307,11 +307,11 @@ Vector3d manipulator::COMpos(int start, VectorXd angles)		//start -> joint numbe
 	
 	for(int i = start; i < 3; i++)
 	{
-		c[i] = forwardKine(angles, start) * c[i];
+		c[i] = forwardKine(angles, i) * c[i];
 	}
-	for(i = start; i < 3; i++)
+	for(int j = start; j < 3; j++)
 	{
-		ans += (c[i] * M) / M_total;
+		ans += (c[j] * M) / M_total;
 	}
 	
 	return ans.block<3,1>(0,0);
@@ -360,9 +360,9 @@ int main()
 	
 	Vector3d xRef, Error;
 	
-	VectorXd dangles
+	VectorXd dangles;
 	
-	MatrixXd COMJacobian(6, angles.size());
+	MatrixXd COMJacobian = X.getCOMJacobian(angles);
 	
 	for(double t = 0.0; t < TMAX; t += twidth)
 	{
