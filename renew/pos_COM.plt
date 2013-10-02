@@ -3,7 +3,7 @@ set grid
 set xrange [*:*]
 set yrange [*:*]
 set zrange [*:*]
-set title "force"
+set title "COM position"
 set hidden3d
 
 
