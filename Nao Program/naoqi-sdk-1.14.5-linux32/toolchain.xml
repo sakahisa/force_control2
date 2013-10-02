@@ -1,0 +1,9 @@
+
+<!--  QiBuild configuration file for linux32 -->
+<toolchain>
+    <package
+        name="naoqi-sdk-linux32"
+        directory="."
+        
+    />
+</toolchain>

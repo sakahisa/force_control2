@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+   <FileVersion major="1" minor="6" />
+   <Project>
+      <Option title="AnglesSet" />
+      <Option makefile_is_custom="1" />
+      <Option compiler="gcc" />
+      <Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\..\.cache\;CMake Files\..\..\..\..\..\..\..\.cache\qi\;CMake Files\..\..\..\..\..\..\..\.cache\qi\toolchains\;CMake Files\..\..\..\..\..\..\..\.cache\qi\toolchains\crosstoolchain\;CMake Files\..\..\..\..\..\..\..\Nao\;CMake Files\..\..\..\..\..\..\..\Nao\qibuild-1.14.3\;CMake Files\..\..\..\..\..\..\..\Nao\qibuild-1.14.3\cmake\;CMake Files\..\..\..\..\..\..\..\Nao\qibuild-1.14.3\cmake\qibuild\;CMake Files\..\..\..\..\..\..\..\Nao\qibuild-1.14.3\cmake\qibuild\internal\;CMake Files\build-crosstoolchain\;" />
+      <Build>
+      <Target title="all">
+         <Option working_dir="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 all" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="AnglesSetModule">
+         <Option output="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/sdk/lib/naoqi/libAnglesSetModule.so" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain" />
+         <Option object_output="./" />
+         <Option type="3" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/include" />
+            <Add directory="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/include/alsoap" />
+            <Add directory="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/include/soap" />
+            <Add directory="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain" />
+            <Add directory="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Eigen" />
+            <Add directory="/usr/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 AnglesSetModule" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="AnglesSetModule/fast">
+         <Option output="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/sdk/lib/naoqi/libAnglesSetModule.so" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain" />
+         <Option object_output="./" />
+         <Option type="3" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/include" />
+            <Add directory="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/include/alsoap" />
+            <Add directory="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/include/soap" />
+            <Add directory="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain" />
+            <Add directory="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Eigen" />
+            <Add directory="/usr/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 AnglesSetModule/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="install">
+         <Option working_dir="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 install" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="install/local">
+         <Option working_dir="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 install/local" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="install/strip">
+         <Option working_dir="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 install/strip" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="list_install_components">
+         <Option working_dir="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 list_install_components" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="rebuild_cache">
+         <Option working_dir="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 rebuild_cache" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/saka/GitRepo/fo2/force_control2/Nao\ Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      </Build>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/AnglesSetModule.cpp">
+      </Unit>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/Set.cpp">
+      </Unit>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/main.cpp">
+      </Unit>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/AnglesSetModule.h">
+      </Unit>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/Set.h">
+      </Unit>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\" />
+      </Unit>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/../../../../../../../.cache/qi/toolchains/crosstoolchain/toolchain-crosstoolchain.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\..\..\.cache\qi\toolchains\crosstoolchain\" />
+      </Unit>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/../../../../../../../Nao/qibuild-1.14.3/cmake/qibuild/qibuild-config.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\..\..\Nao\qibuild-1.14.3\cmake\qibuild\" />
+      </Unit>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/../../../../../../../Nao/qibuild-1.14.3/cmake/qibuild/general.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\..\..\Nao\qibuild-1.14.3\cmake\qibuild\" />
+      </Unit>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/../../../../../../../Nao/qibuild-1.14.3/cmake/qibuild/log.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\..\..\Nao\qibuild-1.14.3\cmake\qibuild\" />
+      </Unit>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/../../../../../../../Nao/qibuild-1.14.3/cmake/qibuild/set.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\..\..\Nao\qibuild-1.14.3\cmake\qibuild\" />
+      </Unit>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/../../../../../../../Nao/qibuild-1.14.3/cmake/qibuild/subdirectory.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\..\..\Nao\qibuild-1.14.3\cmake\qibuild\" />
+      </Unit>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/../../../../../../../Nao/qibuild-1.14.3/cmake/qibuild/find.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\..\..\Nao\qibuild-1.14.3\cmake\qibuild\" />
+      </Unit>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/../../../../../../../Nao/qibuild-1.14.3/cmake/qibuild/flags.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\..\..\Nao\qibuild-1.14.3\cmake\qibuild\" />
+      </Unit>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/../../../../../../../Nao/qibuild-1.14.3/cmake/qibuild/tests.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\..\..\Nao\qibuild-1.14.3\cmake\qibuild\" />
+      </Unit>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/../../../../../../../Nao/qibuild-1.14.3/cmake/qibuild/install.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\..\..\Nao\qibuild-1.14.3\cmake\qibuild\" />
+      </Unit>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/../../../../../../../Nao/qibuild-1.14.3/cmake/qibuild/target.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\..\..\Nao\qibuild-1.14.3\cmake\qibuild\" />
+      </Unit>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/../../../../../../../Nao/qibuild-1.14.3/cmake/qibuild/submodule.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\..\..\Nao\qibuild-1.14.3\cmake\qibuild\" />
+      </Unit>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/../../../../../../../Nao/qibuild-1.14.3/cmake/qibuild/stage.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\..\..\Nao\qibuild-1.14.3\cmake\qibuild\" />
+      </Unit>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/../../../../../../../Nao/qibuild-1.14.3/cmake/qibuild/option.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\..\..\Nao\qibuild-1.14.3\cmake\qibuild\" />
+      </Unit>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/../../../../../../../Nao/qibuild-1.14.3/cmake/qibuild/internal/layout.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\..\..\Nao\qibuild-1.14.3\cmake\qibuild\internal\" />
+      </Unit>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/../../../../../../../Nao/qibuild-1.14.3/cmake/qibuild/internal/install.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\..\..\Nao\qibuild-1.14.3\cmake\qibuild\internal\" />
+      </Unit>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/../../../../../../../Nao/qibuild-1.14.3/cmake/qibuild/internal/glob.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\..\..\Nao\qibuild-1.14.3\cmake\qibuild\internal\" />
+      </Unit>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/../../../../../../../Nao/qibuild-1.14.3/cmake/qibuild/internal/autostrap.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\..\..\Nao\qibuild-1.14.3\cmake\qibuild\internal\" />
+      </Unit>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/../../../../../../../Nao/qibuild-1.14.3/cmake/qibuild/internal/stage.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\..\..\Nao\qibuild-1.14.3\cmake\qibuild\internal\" />
+      </Unit>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/../../../../../../../Nao/qibuild-1.14.3/cmake/qibuild/internal/uselib.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\..\..\Nao\qibuild-1.14.3\cmake\qibuild\internal\" />
+      </Unit>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/../../../../../../../Nao/qibuild-1.14.3/cmake/qibuild/internal/list.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\..\..\Nao\qibuild-1.14.3\cmake\qibuild\internal\" />
+      </Unit>
+      <Unit filename="/home/saka/GitRepo/fo2/force_control2/Nao Program/naoqi-sdk-1.14.5-linux32/workspace/AnglesSet/build-crosstoolchain/dependencies.cmake">
+          <Option virtualFolder="CMake Files\build-crosstoolchain\" />
+      </Unit>
+   </Project>
+</CodeBlocks_project_file>
