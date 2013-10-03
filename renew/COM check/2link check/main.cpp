@@ -3,8 +3,8 @@
 #include "Eigen/Dense"
 #include <vector>
 
-#define twidth 0.00001	//sample time
-#define TMAX 0.0001
+#define twidth 0.0000001	//sample time
+#define TMAX 0.000001
 #define l1 1.0			//length of Link1
 #define l2 1.0			//length of Link2
 #define l3 0.5			//length of Link3
@@ -359,13 +359,10 @@ int main()
 	
 	VectorXd angles(2);
 	angles << 0.0, 0.0;
-	VectorXd omega = VectorXd::Zero(2);
 	
-	Vector3d x = TRANS(X.forwardKine(angles,2)); 
-	VectorXd v = VectorXd::Zero(3);
-	VectorXd a = VectorXd::Zero(3);
-	
-	Vector3d xRef, Error;
+//	Vector3d x = TRANS(X.forwardKine(angles,2)); 
+
+//	Vector3d xRef, Error;
 	
 	VectorXd dangles;
 	VectorXd angles_past = VectorXd::Zero(2);
@@ -383,9 +380,9 @@ int main()
 //		Error = xRef - x;
 //		angles = X.invKine(Error, angles);
 		
-		angles << (t*M_PI/(10)), (t*M_PI/(10));
+		angles << (t*M_PI/(1000)), (t*M_PI/(10));
 		
-		x = TRANS(X.forwardKine(angles,2));
+//		x = TRANS(X.forwardKine(angles,2));
 //		x = Vector3d::Zero();
 		
 //		cout << X.forwardKine(angles) << endl;
