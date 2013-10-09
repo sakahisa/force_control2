@@ -4,14 +4,14 @@
 #include "Eigen/Dense"
 #include <vector>
 
-#define twidth 0.00001	//sample time
-#define TMAX 0.001
-#define l1 1.0			//length of Link1
-#define l2 0.5			//length of Link2
-#define l3 0.5			//length of Link3
-#define W 1000			//cut off
-#define M 1.0			//mass
-#define D 2.5			//coefficient of viscosity
+#define twidth 	0.000001	//sample time
+#define TMAX 	0.01
+#define l1 		1.0			//length of Link1
+#define l2 		1.0			//length of Link2
+#define l3 		1.0			//length of Link3
+#define W 		1000			//cut off
+#define M 		1.0			//mass
+#define D 		2.5			//coefficient of viscosity
 
 #define TRANS(x) x.block<3,1>(0,3)
 #define ROT(x) x.block<3,3>(0,0) 
@@ -35,6 +35,7 @@ bool svdInverse(const _Matrix_Type_ &a, _Matrix_Type_ &result, double epsilon = 
 }
 
 typedef Eigen::Matrix<double, 6, 1> Vector6d;
+VectorXd Zero5 = VectorXd::Zero(5);
 
 class baseClass
 {
@@ -101,7 +102,8 @@ class manipulator : public baseClass
 	
 	VectorXd invKine(Vector3d Error, VectorXd angles);
 	
-	Vector4d COMpos(int start, VectorXd angles);
+	VectorXd COMpos(int start, VectorXd angles);
+	VectorXd COMpos(VectorXd angles);
 	MatrixXd getCOMJacobian(VectorXd angles);
 	
 	std::vector<Link* > links;
@@ -246,7 +248,7 @@ MatrixXd manipulator::testGetJacobian(VectorXd dangles, Vector3d dx)
 {
 	MatrixXd Jacobian(6,dangles.size());
 	
-	for(int i = 0; i<3; i++)
+	for(int i = 0; i<dx.size(); i++)
 	{
 		for(int j = 0; j<dangles.size(); j++)
 		{
@@ -293,38 +295,42 @@ VectorXd manipulator::invKine(Vector3d Error, VectorXd angles)
 	return angles;
 }
 
-//Center of Mass Position calculating
-Vector4d manipulator::COMpos(int start, VectorXd angles)		//start -> joint number
+//Center of Mass Position calculation
+VectorXd manipulator::COMpos(int start, VectorXd angles)		//start -> joint number
 {
-	Link A;
-	VectorXd ans = VectorXd::Zero(4);
-	Vector4d c[3]; 
+	VectorXd ans = Zero5;
+	Vector4d c[angles.size()]; 
 	c[0] << -l1/2, 0.0, 0.0, 1.0;
 	c[1] << -l2/2, 0.0, 0.0, 1.0;
 	c[2] << -l3/2, 0.0, 0.0, 1.0;
 	
-	double M_total = M * (3 - start);
+	double M_total = M * (angles.size() - start);
 	
-	for(int i = start; i < 3; i++)
+	for(int i = start; i < angles.size(); i++)
 	{
 		c[i] = forwardKine(angles, i+1) * c[i];
 //		c[i].head(3) += forwardKine(angles, i).block<3,1>(0,3);
 	}
-	for(int j = start; j < 3; j++)
+	for(int j = start; j < angles.size(); j++)
 	{
-		ans += (c[j] * M) / M_total;
+		ans.head(3) += (c[j].head(3) * M) / M_total;
 	}
-	ans(3) = M_total;
+	ans(3) = 1;
+	ans(4) = M_total;
 	
-//	cout << c[0] << endl;
 	return ans;
+}
+
+VectorXd manipulator::COMpos(VectorXd angles)
+{
+	return COMpos(0, angles);
 }
 
 //COM Jacobian
 MatrixXd manipulator::getCOMJacobian(VectorXd angles)
 {
 	MatrixXd COMJacobian(6, angles.size());
-	Vector4d COM[angles.size()];
+	VectorXd COM[angles.size()];
 	Vector3d z, p_minus, p;
 	
 	for(int i = 0; i < angles.size(); i++)
@@ -338,8 +344,14 @@ MatrixXd manipulator::getCOMJacobian(VectorXd angles)
 		p = COM[i].head(3) - p_minus;
 		
 		z = ROT(forwardKine(angles, i)).col(2);
-		
-		COMJacobian.block<3,1>(0,i) = COM[i](3) / (M * 3) * z.cross(p);
+/*		
+		cout << "i       " << i << endl;
+		cout << "COM[" << i << "]  " << COM[i].transpose() << endl;
+		cout << "p       " << p.transpose() << endl;
+		cout << "p_minus " << p_minus.transpose() << endl;
+		cout << "z       " << z.transpose() << endl;
+*/		
+		COMJacobian.block<3,1>(0,i) = (COM[i](4) / (M * 3)) * z.cross(p);
 		COMJacobian.block<3,1>(3,i) = z; 
 	}
 	
@@ -351,9 +363,9 @@ int main()
 	Link A;
 	manipulator X;	
 	
-	VectorXd angles(3);
-	angles << M_PI/6, M_PI/6, M_PI/6;
-	VectorXd omega = VectorXd::Zero(3);
+	ofstream ofs("edgepos.txt");
+	
+	Vector3d angles = Vector3d::Zero();
 	
 	Vector3d x = TRANS(X.forwardKine(angles,3)); 
 	VectorXd v = VectorXd::Zero(3);
@@ -363,34 +375,35 @@ int main()
 	
 	VectorXd dangles;
 	VectorXd angles_past = VectorXd::Zero(3);
-	Vector4d dCOMx = Vector4d::Zero();
-	Vector4d COMx = Vector4d::Zero();
-	Vector4d COMx_past = Vector4d::Zero();
+	VectorXd dCOMx = Zero5;
+	VectorXd COMx = Zero5;
+	VectorXd COMx_past = Zero5;
 	
 	
 	MatrixXd COMJacobian = MatrixXd::Zero(6, angles.size());
 	
 	for(double t = 0.0; t < TMAX; t += twidth)
 	{
-		xRef << 0.75 * sin(t/(TMAX)), 0.75 * cos(t/(TMAX)), 0.0;
-		
+		angles << M_PI / 4 * sin(t *1000), -M_PI / 4 * sin(t *1000), -M_PI / 4 * sin(t *1000);
+/*		
 		Error = xRef - x;
 		angles = X.invKine(Error, angles);
 		x = TRANS(X.forwardKine(angles,3));
-		
+*/		
 //		cout << X.forwardKine(angles) << endl;
 		
 		COMJacobian = X.getCOMJacobian(angles);
 //		cout << COMJacobian << endl;
 		
-		COMx = X.COMpos(0, angles);
+		COMx = X.COMpos(angles);
 		
 		dangles = angles - angles_past;
 		dCOMx = COMx - COMx_past;
 		COMJacobian = X.testGetJacobian(dangles, dCOMx.head(3));
 		angles_past = angles;
 		COMx_past = COMx;
-				cout << "----------------test-------------------" << endl << COMJacobian << endl << "---------------------------------------" << endl << "---------------------------------------" << endl;
+//		cout << "----------------test-------------------" << endl << COMJacobian << endl << "---------------------------------------" << endl;
+		ofs << t << " " << COMx.transpose() << " " << TRANS(X.forwardKine(angles)).transpose() << endl;
 	}
 /*	
 	for(int i = 0; i < 5; i ++)
