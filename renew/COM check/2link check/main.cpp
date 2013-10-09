@@ -37,7 +37,6 @@ bool svdInverse(const _Matrix_Type_ &a, _Matrix_Type_ &result, double epsilon = 
 }
 
 typedef Eigen::Matrix<double, 6, 1> Vector6d;
-VectorXd Zero5 = VectorXd::Zero(5);
 class baseClass
 {
 	public:
@@ -104,8 +103,8 @@ class manipulator : public baseClass
 	
 	VectorXd invKine(Vector3d Error, VectorXd angles);
 	
-	VectorXd COMpos(int start, VectorXd angles);
-	VectorXd COMpos(VectorXd angles);
+	Vector4d COMpos(int start, VectorXd angles);
+	Vector4d COMpos(VectorXd angles);
 	MatrixXd getCOMJacobian(VectorXd angles);
 	
 	std::vector<Link* > links;
@@ -301,9 +300,9 @@ VectorXd manipulator::invKine(Vector3d Error, VectorXd angles)
 }
 
 //Center of Mass Position calculation
-VectorXd manipulator::COMpos(int start, VectorXd angles)		//start -> joint number
+Vector4d manipulator::COMpos(int start, VectorXd angles)		//start -> joint number
 {
-	VectorXd ans = Zero5;
+	Vector4d ans = Vector4d::Zero();
 	Vector4d c[2]; 
 	c[0] << -l1/2, 0.0, 0.0, 1.0;
 	c[1] << -l2/2, 0.0, 0.0, 1.0;
@@ -317,15 +316,14 @@ VectorXd manipulator::COMpos(int start, VectorXd angles)		//start -> joint numbe
 	}
 	for(int j = start; j < 2; j++)
 	{
-		ans.head(4) += (c[j] * M) / M_total;
+		ans += (c[j] * M) / M_total;
 	}
-	ans(3) = 1;
-	ans(4) = M_total;
+	ans(3) = M_total;
 	
 	return ans;
 }
 
-VectorXd manipulator::COMpos(VectorXd angles)
+Vector4d manipulator::COMpos(VectorXd angles)
 {
 	return COMpos(0, angles);
 }
@@ -334,7 +332,7 @@ VectorXd manipulator::COMpos(VectorXd angles)
 MatrixXd manipulator::getCOMJacobian(VectorXd angles)
 {
 	MatrixXd COMJacobian(6, angles.size());
-	VectorXd COM[angles.size()];
+	Vector4d COM[angles.size()];
 	Vector3d z, p_minus, p;
 	
 	for(int i = 0; i < angles.size(); i++)
@@ -355,7 +353,7 @@ MatrixXd manipulator::getCOMJacobian(VectorXd angles)
 		cout << "p_minus " << p_minus.transpose() << endl;
 		cout << "z       " << z.transpose() << endl;
 		
-		COMJacobian.block<3,1>(0,i) = (COM[i](4) / (M * 2)) * z.cross(p);
+		COMJacobian.block<3,1>(0,i) = (COM[i](3) / (M * 2)) * z.cross(p);
 		COMJacobian.block<3,1>(3,i) = z; 
 	}
 	
@@ -376,9 +374,9 @@ int main()
 	VectorXd dangles     = VectorXd::Zero(2);
 	VectorXd angles_past = VectorXd::Zero(2);
 	
-	VectorXd dCOMx		= Zero5;
-	VectorXd COMx		= Zero5;
-	VectorXd COMx_past	= Zero5;
+	Vector4d dCOMx		= Vector4d::Zero();
+	Vector4d COMx		= Vector4d::Zero();
+	Vector4d COMx_past	= Vector4d::Zero();
 	
 	Vector3d dcomx = Vector3d::Zero();
 	Vector3d error = Vector3d::Zero();
