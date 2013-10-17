@@ -33,3 +33,12 @@ extern "C"
 
 } // extern "C"
 
+int main(int argc, char *argv[])
+{
+   // pointer to createModule
+   TMainType sig;
+   sig = &_createModule;
+   // call main
+   ALTools::mainFunction("AnglesSet", argc, argv, sig);
+}
+
