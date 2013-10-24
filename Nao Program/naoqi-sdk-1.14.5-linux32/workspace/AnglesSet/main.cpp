@@ -1,3 +1,4 @@
+//頑張れ　永井　ｂｙ　おれ
 #include <signal.h>
 #include <boost/shared_ptr.hpp>
 #include <alcommon/albroker.h>
