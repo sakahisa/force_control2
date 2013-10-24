@@ -291,6 +291,7 @@ MatrixXd manipulator::getLfoot2COMJacobian(VectorXd angles)
 {
 	Vector3d LfootPos = TRANS(forwardKine(-1.0, angles));
 	Vector4d COMPos = COMpos(angles);
+	Vector3d L2C_base = COMPos.head(3) - LfootPos;
 	
 	
 }
@@ -306,7 +307,10 @@ MatrixXd manipulator::getLfoot2RfootJacobian(VectorXd angles)
 	Exchange.block<3,3>(0,0) = Rot_B2L;
 	Exchange.block<3,3>(3,3) = Rot_B2L;
 	
-//	JacB2R = getJacobian(angles, angles.size();
+	Jac_B2R = getJacobian(-1.0, angles);
+	Jac_L2R = Exchange * Jac_B2R;
+	
+	return Jac_L2R;
 }
 
 Vector3d manipulator::getLfoot2RfootPos(VectorXd angles)

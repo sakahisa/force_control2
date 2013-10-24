@@ -1000,22 +1000,6 @@ Eigen/Dense
 Eigen/Dense
 /home/saka/GitRepo/fo2/force_control2/renew/robot joint/Eigen/Dense
 
-/home/saka/GitRepo/fo2/force_control2/renew/robot joint/main.cpp
-iostream
--
-cmath
--
-Eigen/Dense
-/home/saka/GitRepo/fo2/force_control2/renew/robot joint/Eigen/Dense
-vector
--
-Link.h
-/home/saka/GitRepo/fo2/force_control2/renew/robot joint/Link.h
-manipulator.h
-/home/saka/GitRepo/fo2/force_control2/renew/robot joint/manipulator.h
-constant.h
-/home/saka/GitRepo/fo2/force_control2/renew/robot joint/constant.h
-
 /home/saka/GitRepo/fo2/force_control2/renew/robot joint/manipulator.cpp
 iostream
 -
