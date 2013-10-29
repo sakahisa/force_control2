@@ -17,55 +17,70 @@ int main()
 		
 	Vector3d x_Lfoot, x_Rfoot;
 	Vector3d x_past_Lfoot = Vector3d::Zero(), x_past_Rfoot = Vector3d::Zero();
-	Vector3d dx_Lfoot, dx_Rfoot; 
-
+	Vector3d dx_Lfoot, dx_Rfoot;
+	
+	Vector3d v_L2R;
+	Vector3d v_COM;
+	
 //	Vector3d xRef, Error;
 	
 	VectorXd angles      = VectorXd::Zero(8);
 	VectorXd dangles     = VectorXd::Zero(8);
 	VectorXd angles_past = VectorXd::Zero(8);
 	
-//	Vector4d dCOMx		= Vector4d::Zero();
-	Vector4d COMx		= Vector4d::Zero();
-//	Vector4d COMx_past	= Vector4d::Zero();
+	Vector3d dCOMx		= Vector3d::Zero();
+	Vector3d COMx		= Vector3d::Zero();
+	Vector3d COMx_past	= Vector3d::Zero();
 	
 //	VectorXd dcomx = Vector3d::Zero();
 //	Vector3d error = Vector3d::Zero();
 	
 	MatrixXd COMJacobian = MatrixXd::Zero(6, angles.size());
-	MatrixXd Jacobian = MatrixXd::Zero(6, angles.size() / 2);
-	
+	MatrixXd Jacobian_L = MatrixXd::Zero(6, angles.size() / 2);
+	MatrixXd Jacobian_R = MatrixXd::Zero(6, angles.size() / 2);
 	for(double t = 0.0; t < TMAX + twidth; t += twidth)
 	{
-		angles << M_PI / 8 * sin(t *100), M_PI / 8 * sin(t *100),
-		          M_PI / 8 * sin(t *100), M_PI / 8 * sin(t *100),
-				  M_PI / 8 * sin(t *100), M_PI / 8 * sin(t *100),
-		          M_PI / 8 * sin(t *100), M_PI / 8 * sin(t *100);
+		angles << M_PI / 8 * sin(t), M_PI / 8 * sin(t),
+		          M_PI / 8 * sin(t), M_PI / 8 * sin(t),
+				  M_PI / 8 * sin(t), M_PI / 8 * sin(t),
+		          M_PI / 8 * sin(t), M_PI / 8 * sin(t);
 		
 		dangles = angles - angles_past;
 		angles_past = angles;
 		
 		x_Lfoot = TRANS(X.forwardKine(-1.0, angles));
 		x_Rfoot = TRANS(X.forwardKine(1.0, angles));
+		COMx = (X.COMpos(angles)).head(3);
 		
 		dx_Lfoot = x_Lfoot - x_past_Lfoot;
 		dx_Rfoot = x_Rfoot - x_past_Rfoot;
+		dCOMx = COMx - COMx_past;
 		
 		x_past_Lfoot = x_Lfoot;
 		x_past_Rfoot = x_Rfoot;
+		COMx_past = COMx;
 		
-		Jacobian = X.getJacobian(-1.0, angles);
-		cout << (Jacobian * dangles.block<4,1>(0,0)).transpose() << endl << dx_Lfoot.transpose() << endl;
+		Jacobian_L = X.getJacobian(-1.0, angles);
 		
-		Jacobian = X.getJacobian(1.0, angles);
-		cout << (Jacobian * dangles.block<4,1>(4,0)).transpose() << endl << dx_Rfoot.transpose() << endl;
+		Jacobian_R = X.getJacobian(1.0, angles);
+		
+		COMJacobian = X.getCOMJacobian(angles);
+		
+		v_L2R = (ROT(X.forwardKine(-1.0, angles))).transpose() * (dx_Rfoot - dx_Lfoot);
+		v_COM = dCOMx / twidth;
+		
+		cout << "v_L2R					v_COM" << endl;
+		cout << v_L2R.transpose() << "		" << v_COM.transpose() << endl << endl;
+		
+		v_L2R = (X.getLfoot2RfootJacobian(angles) * dangles).head(3);
+		v_COM = ROT(X.forwardKine(-1.0, angles)).transpose() * (X.getLfoot2COMJacobian(angles) * dangles).head(3);
+		
+		cout << v_L2R.transpose() << "		" << v_COM.transpose() << endl << endl;
+		
 		
 //		cout << X.forwardKine(angles) << endl;
 		
-		COMJacobian = X.getCOMJacobian(angles);
 //		cout << "COMJacobian" << endl << COMJacobian << endl;
-		
-		COMx		 = X.COMpos(angles);
 		
 //		dCOMx		 = (COMx - COMx_past) / twidth;
 //		COMx_past	 = COMx;
@@ -85,7 +100,6 @@ int main()
 */		
 //		COMJacobian = X.testGetJacobian(dangles, dCOMx.head(3));	
 	}
-	
 //	for (int i = 0; i < angles.size() + 1; i ++)	cout << "forwardKine(" << i << ")---------------------" << endl <<X.forwardKine(angles,i) << endl;
 	return 0;
 }

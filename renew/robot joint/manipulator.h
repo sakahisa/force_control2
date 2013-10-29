@@ -61,7 +61,5 @@ class manipulator : public baseClass
 	MatrixXd getLfoot2COMJacobian(VectorXd angles);
 	MatrixXd getLfoot2RfootJacobian(VectorXd angles);
 	
-	Vector3d getLfoot2RfootPos(VectorXd angles);
-	
 	std::vector<Link* > links;
 };
