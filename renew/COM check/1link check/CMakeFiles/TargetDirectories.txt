@@ -1,1 +1,0 @@
-/home/saka/GitRepo/fo2/force_control2/renew/COM check/1link check/CMakeFiles/helloDemo.dir

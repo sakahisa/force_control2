@@ -1,9 +1,0 @@
-set size 1.0,1.0
-set grid
-set xrange [-3.0:3.0]
-set yrange [-3.0:3.0]
-set title "edgepos"
-
-
-
-plot "edgepos.txt" using 1:2 title "edgepos" with lines linetype 1 linewidth 5
