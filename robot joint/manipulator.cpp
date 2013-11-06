@@ -119,7 +119,7 @@ Matrix4d manipulator::forwardKine(VectorXd angles, int to_idx)
 		assert (i <= links.size());
 		T *= links[i]->Transform(angles(i)); 
 	}
-
+	
 	return T;
 }
 
@@ -178,7 +178,6 @@ VectorXd manipulator::moment(VectorXd angles, Vector3d fRef, int LorR)
 		else 			x = TRANS(forwardKine(angles,angles.size()));
 		n += x.cross(fRef);
 	}
-	
 	return n;
 }
 /*
@@ -292,21 +291,19 @@ MatrixXd manipulator::getCOMJacobian(VectorXd angles)
 MatrixXd manipulator::getLfoot2COMJacobian(VectorXd angles)
 {
 	Matrix4d T = forwardKine(-1.0, angles);
+	Matrix3d L2Brot = ROT(T).transpose();
 	Vector3d LfootPos = TRANS(T);
 	Vector4d COMPos = COMpos(angles);
 	
 	Vector3d L2C_base = COMPos.head(3) - LfootPos;
-	Vector3d L2C_Lfoot = ROT(T).transpose() * L2C_base;
-	Vector3d z = ROT(T).col(2);
+	Vector3d L2C_Lfoot = L2Brot * L2C_base;
 	
 	MatrixXd JacL2C = MatrixXd::Zero(6, angles.size());
 	MatrixXd J = MatrixXd::Zero(6, angles.size());
-	Matrix3d Rot_L2B = (ROT(forwardKine(-1.0, angles))).transpose();
-	
 	MatrixXd Convert = MatrixXd::Zero(6, 6);
 	
-	Convert.block<3,3>(0,0) = Rot_L2B;
-	Convert.block<3,3>(3,3) = Rot_L2B;
+	Convert.block<3,3>(0,0) = L2Brot;
+	Convert.block<3,3>(3,3) = L2Brot;
 	
 	J = getCOMJacobian(angles);
 	
@@ -314,16 +311,13 @@ MatrixXd manipulator::getLfoot2COMJacobian(VectorXd angles)
 	
 	JacL2C = Convert * J;
 	
-
     for(int i = 0; i < angles.size(); i++)
 	{
-		JacL2C.block<3,1>(0,i) +=  -J.block<3,1>(3,i).cross(L2C_Lfoot);
+		JacL2C.block<3,1>(0,i) -=  J.block<3,1>(3,i).cross(L2C_Lfoot);
     }
-	
 	
 	return JacL2C;
 }
-
 
 MatrixXd manipulator::getLfoot2RfootJacobian(VectorXd angles)
 {

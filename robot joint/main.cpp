@@ -36,8 +36,7 @@ int main()
 //	Vector3d error = Vector3d::Zero();
 	
 	MatrixXd COMJacobian = MatrixXd::Zero(6, angles.size());
-	MatrixXd Jacobian_L = MatrixXd::Zero(6, angles.size() / 2);
-	MatrixXd Jacobian_R = MatrixXd::Zero(6, angles.size() / 2);
+	Matrix4d T_L, T_R;
 	for(double t = 0.0; t < TMAX + twidth; t += twidth)
 	{
 		angles << M_PI / 8 * sin(t), M_PI / 8 * sin(t),
@@ -45,11 +44,14 @@ int main()
 				  M_PI / 8 * sin(t), M_PI / 8 * sin(t),
 		          M_PI / 8 * sin(t), M_PI / 8 * sin(t);
 		
-		dangles = angles - angles_past;
+		dangles = (angles - angles_past) / twidth;
 		angles_past = angles;
 		
-		x_Lfoot = TRANS(X.forwardKine(-1.0, angles));
-		x_Rfoot = TRANS(X.forwardKine(1.0, angles));
+		T_L = X.forwardKine(-1.0, angles);
+		T_R = X.forwardKine(1.0, angles);
+		
+		x_Lfoot = TRANS(T_L);
+		x_Rfoot = TRANS(T_R);
 		COMx = (X.COMpos(angles)).head(3);
 		
 		dx_Lfoot = x_Lfoot - x_past_Lfoot;
@@ -60,14 +62,10 @@ int main()
 		x_past_Rfoot = x_Rfoot;
 		COMx_past = COMx;
 		
-		Jacobian_L = X.getJacobian(-1.0, angles);
-		
-		Jacobian_R = X.getJacobian(1.0, angles);
-		
 		COMJacobian = X.getCOMJacobian(angles);
 		
-		v_L2R = (ROT(X.forwardKine(-1.0, angles))).transpose() * (dx_Rfoot - dx_Lfoot);
-		v_COM = (ROT(X.forwardKine(-1.0, angles))).transpose() * (dCOMx / twidth);
+		v_L2R = (ROT(T_L)).transpose() * ((dx_Rfoot - dx_Lfoot) / twidth);
+		v_COM = (ROT(T_L)).transpose() * ((dCOMx - dx_Lfoot) / twidth);
 		
 		cout << "v_L2R					v_COM" << endl;
 		cout << v_L2R.transpose() << "		" << v_COM.transpose() << endl << endl;
@@ -76,7 +74,6 @@ int main()
 		v_COM = (X.getLfoot2COMJacobian(angles) * dangles).head(3);
 		
 		cout << v_L2R.transpose() << "		" << v_COM.transpose() << endl << endl;
-		
 		
 //		cout << X.forwardKine(angles) << endl;
 		
@@ -100,6 +97,5 @@ int main()
 */		
 //		COMJacobian = X.testGetJacobian(dangles, dCOMx.head(3));	
 	}
-//	for (int i = 0; i < angles.size() + 1; i ++)	cout << "forwardKine(" << i << ")---------------------" << endl <<X.forwardKine(angles,i) << endl;
 	return 0;
 }
