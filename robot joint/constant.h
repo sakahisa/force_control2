@@ -2,8 +2,8 @@
 
 using namespace Eigen;
 
-#define twidth 	0.000001	//sample time
-#define TMAX 	0.001		//total time
+#define twidth 	0.00000001	//sample time
+#define TMAX 	0.00001		//total time
 
 // length of left leg links
 #define L1 		0.1

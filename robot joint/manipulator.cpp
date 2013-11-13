@@ -31,6 +31,14 @@ void baseClass::LPF(Vector6d forceDis)
 	Dis += dDis*twidth;
 }
 
+void baseClass::testJacobian(Vector3d v, VectorXd omega, MatrixXd J)
+{
+	Vector3d v2, err;
+	v2 = (J * omega).head(3);
+	err = v - v2;
+	cout << v.transpose() << endl << v2.transpose() << endl << err.transpose() << "	<--------- error" << endl << endl;
+} 
+
 force::force()
 {
 	Vector6d Z = VectorXd::Zero(6);
@@ -238,17 +246,12 @@ Vector4d manipulator::COMpos(int start, VectorXd angles)		//start -> joint numbe
 Vector4d manipulator::COMpos(VectorXd angles)
 {
 	Vector4d ans = Vector4d::Zero();
-	Vector4d Lcom = COMpos(0, angles);
-	Vector4d Rcom = COMpos(4, angles);
+	Vector4d Lcom = COMpos(0, angles);			//<---- Lfoot COM
+	Vector4d Rcom = COMpos(4, angles);			//<---- Rfoot COM
 	double M_total = Lcom(3) + Rcom(3);
 	ans.head(3) = (Lcom.head(3) * Lcom(3) + Rcom.head(3) * Rcom(3)) / M_total;
 	ans(3) = M_total;
-/*	
-	std::cout << "Lcom	" << Lcom.transpose() << std::endl;
-	std::cout << "Rcom	" << Rcom.transpose() << std::endl;
-	std::cout << "COMp	" << ans.transpose()  << std::endl;
-	std::cout << "links.size() " << links.size() << std::endl;
-*/	
+	
 	return ans;
 }
 
@@ -259,7 +262,7 @@ MatrixXd manipulator::getCOMJacobian(VectorXd angles)
 	Matrix4d T = Matrix4d::Zero();
 	Vector4d COM[angles.size()];
 	Vector3d z, p_minus, p;
-	double M_total;
+	double M_total = 0.0;
 	
 	for(int i = 0; i < angles.size(); i++)
 	{
@@ -267,21 +270,17 @@ MatrixXd manipulator::getCOMJacobian(VectorXd angles)
 		M_total += links[i]->mass;
 	}
 	
-	for(int i = 0; i < links.size(); i++)
+	for(int i = 0; i < angles.size(); i++)
 	{
-		T = forwardKine(angles, i);
+		if(i < angles.size() / 2)			T = forwardKine(angles, i);
+		else if(i == angles.size() / 2) 	T = forwardKine(angles, 0);
+		else 								T = forwardKine(angles, i);
 		p_minus = TRANS(T);
 		p = COM[i].head(3) - p_minus;
 		
 		z = ROT(T).col(2);
-/*		
-		cout << "i       " << i << endl;
-		cout << "COM[" << i << "]  " << COM[i].transpose() << endl;
-		cout << "p       " << p.transpose() << endl;
-		cout << "p_minus " << p_minus.transpose() << endl;
-		cout << "z       " << z.transpose() << endl;
-*/		
-		if(i < links.size()-1) COMJacobian.block<3,1>(0,i) = (COM[i](3) / M_total) * z.cross(p);
+		
+		COMJacobian.block<3,1>(0,i) = (COM[i](3) / M_total) * z.cross(p);
 		COMJacobian.block<3,1>(3,i) = z; 
 	}
 	
@@ -297,25 +296,25 @@ MatrixXd manipulator::getLfoot2COMJacobian(VectorXd angles)
 	
 	Vector3d L2C_base = COMPos.head(3) - LfootPos;
 	Vector3d L2C_Lfoot = L2Brot * L2C_base;
+	Vector3d z;
 	
 	MatrixXd JacL2C = MatrixXd::Zero(6, angles.size());
-	MatrixXd J = MatrixXd::Zero(6, angles.size());
-	MatrixXd Convert = MatrixXd::Zero(6, 6);
+	MatrixXd JCOM = getCOMJacobian(angles);
+	MatrixXd JKine = MatrixXd::Zero(6, angles.size());
 	
-	Convert.block<3,3>(0,0) = L2Brot;
-	Convert.block<3,3>(3,3) = L2Brot;
-	
-	J = getCOMJacobian(angles);
-	
-	J.block<6, 4>(0, 0) -= getJacobian(-1.0, angles);
-	
-	JacL2C = Convert * J;
+	MatrixXd JKine_L = getJacobian(-1.0, angles);
+	MatrixXd JKine_R = getJacobian(1.0, angles);
 	
     for(int i = 0; i < angles.size(); i++)
 	{
-		JacL2C.block<3,1>(0,i) -=  J.block<3,1>(3,i).cross(L2C_Lfoot);
+		if(i < angles.size() / 2)	JKine.block<3, 1>(0, i) = JKine_L.block<3, 1>(0, i);
+		else 						JKine.block<3, 1>(0, i) = JKine_L.block<3, 1>(0, i - angles.size() / 2);
+		z = L2Brot * JKine.block<3, 1>(3, i);
+		if(i < angles.size ()/ 2)	JacL2C.block<3, 1>(0, i) = L2Brot * (JCOM.block<3, 1>(0, i) - JKine.block<3, 1>(0, i)) - z.cross(L2C_Lfoot);
+		else 						JacL2C.block<3, 1>(0, i) = L2Brot * (JCOM.block<3, 1>(0, i)) - z.cross(L2C_Lfoot);
+		JacL2C.block<3, 1>(3, i) = z;
     }
-	
+//	cout << "JCOM" << endl << JCOM << endl << "JKine" << endl << JKine << endl;
 	return JacL2C;
 }
 

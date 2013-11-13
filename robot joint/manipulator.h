@@ -11,6 +11,7 @@ class baseClass
 	public:
 	Vector6d Dis;
 	void LPF(Vector6d forceDis);
+	void testJacobian(Vector3d v, VectorXd omega, MatrixXd J);
 };
 
 class force : public baseClass

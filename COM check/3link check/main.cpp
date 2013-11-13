@@ -400,7 +400,7 @@ int main()
 //		cout << X.forwardKine(angles) << endl;
 		
 		COMJacobian = X.getCOMJacobian(angles);
-		cout << "COMJacobian" << endl << COMJacobian << endl;
+//		cout << "COMJacobian" << endl << COMJacobian << endl;
 		
 		COMx		 = X.COMpos(angles);
 		dCOMx		 = (COMx - COMx_past) / twidth;
@@ -413,8 +413,8 @@ int main()
 		
 		error = dCOMx.head(3) - dcomx;
 		
-		
-		cout << "dangles  " << dangles.transpose() << endl;
+		cout << "test     t = " << t <<endl;
+		cout << "dcomx  " << dcomx.transpose() << endl;
 		cout << "dCOMx  " << dCOMx.transpose() << endl;
 		cout << "error  " << error.transpose() << endl;
 		
