@@ -1,2 +1,0 @@
-/home/saka/Nao/naoqi-sdk-1.14.5-linux32/doc/examples/core/helloworld/build-mytoolchain/CMakeFiles/helloworld.dir
-/home/saka/Nao/naoqi-sdk-1.14.5-linux32/doc/examples/core/helloworld/build-mytoolchain/CMakeFiles/testhelloworld.dir
